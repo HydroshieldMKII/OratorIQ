@@ -9,4 +9,4 @@
 
 # Other ressources
   ## Machine Learning 
-  - (https://www.tensorflow.org/learn)
+  - TensorFlow (https://www.tensorflow.org/learn)
