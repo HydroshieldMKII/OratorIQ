@@ -6,3 +6,7 @@
 
 # Backend Framework
   - Node.js (https://nodejs.org/en)
+
+# Other ressources
+  ## Machine Learning 
+    - (https://www.tensorflow.org/learn)
