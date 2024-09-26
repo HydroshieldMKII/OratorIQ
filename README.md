@@ -10,12 +10,17 @@
 
 - Node.js (https://nodejs.org/en)
 
+## Packages
+
+- Express (https://expressjs.com)
+- Nodejs-Whisper https://www.npmjs.com/package/nodejs-whisper
+
 # Other ressources
 
 ## Machine Learning
 
 - TensorFlow (https://www.tensorflow.org/learn)
 
-# Models
+# Potentials Models
 
 - Model: https://huggingface.co/spaces/bofenghuang/speech-to-text
