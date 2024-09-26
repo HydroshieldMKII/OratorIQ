@@ -14,7 +14,7 @@ set -x # Print the commands being executed (debug)
 chmod +x scripts/_nodeinstaller.sh
 chmod +x scripts/_whisperinstaller.sh
 
-sudo scripts/_nodeinstall.sh
-sudo scripts/_deepspeechinstall.sh
+sudo scripts/_nodeinstaller.sh
+sudo scripts/_whisperinstaller.sh
 
 echo "All required packages for the project have been installed successfully."

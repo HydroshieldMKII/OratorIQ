@@ -7,12 +7,11 @@ set -x # Print the commands being executed (debug)
 
 # Node version to install (Latest version supported by DeepSpeech is 15.14.0)
 node_version=15.14.0
-use_gpu=false # Set to true if you want to use the GPU version of DeepSpeech
 
 # Update package lists and upgrade installed packages
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y curl
+sudo apt-get install -y curl build-essential
 
 # Function to install NVM
 install_nvm() {
@@ -42,12 +41,7 @@ npm init -y
 
 # Install required Node.js packages
 echo "Installing required Node.js packages..."
-# echo "Installing DeepSpeech..."
-# if $use_gpu; then
-#     npm install deepspeech-gpu
-# else
-#     npm install deepspeech
-# fi
+
 echo "Installing NLP..."
 npm install node-nlp # https://github.com/axa-group/nlp.js
 

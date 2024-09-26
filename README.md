@@ -13,7 +13,7 @@
 ## Packages
 
 - Express (https://expressjs.com)
-- Nodejs-Whisper https://www.npmjs.com/package/nodejs-whisper
+- Nodejs-Whisper (https://www.npmjs.com/package/nodejs-whisper)
 
 # Other ressources
 
