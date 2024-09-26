@@ -1,6 +1,6 @@
 # Speech-to-Text (STT) Framework
 
-- Mozilla DeepSpeech (https://github.com/mozilla/DeepSpeech)
+- Whisper (https://github.com/openai/whisper)
 
 # Natural Language Processing (NLP)
 
@@ -16,6 +16,6 @@
 
 - TensorFlow (https://www.tensorflow.org/learn)
 
-# Model
+# Models
 
 - Model: https://huggingface.co/spaces/bofenghuang/speech-to-text
