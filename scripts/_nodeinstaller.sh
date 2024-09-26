@@ -11,7 +11,7 @@ node_version=15.14.0
 # Update package lists and upgrade installed packages
 sudo apt-get update
 sudo apt-get upgrade -y
-sudo apt-get install -y curl build-essential
+sudo apt-get install -y curl build-essential make
 
 # Function to install NVM
 install_nvm() {
@@ -41,6 +41,12 @@ npm init -y
 
 # Install required Node.js packages
 echo "Installing required Node.js packages..."
+
+echo "Installing Whisper binding..."
+npm i nodejs-whisper
+
+echo "Installing whisper model..."
+npx nodejs-whisper download
 
 echo "Installing NLP..."
 npm install node-nlp # https://github.com/axa-group/nlp.js

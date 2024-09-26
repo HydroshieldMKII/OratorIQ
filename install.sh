@@ -17,4 +17,4 @@ chmod +x scripts/_whisperinstaller.sh
 sudo scripts/_nodeinstaller.sh
 sudo scripts/_whisperinstaller.sh
 
-echo "All required packages for the project have been installed successfully."
+echo "Installation complete!"
