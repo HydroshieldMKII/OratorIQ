@@ -1,17 +1,30 @@
 #!/bin/bash
 
-# sed -i 's/\r$//' ./install.sh
-# sed -i 's/\r$//' ./scripts/_nodeinstaller.sh
-# sed -i 's/\r$//' ./scripts/_whisperinstaller.sh
-
-# !> For Debian-based systems only <!
-#This script will try to install the required packages for the oratorIQ project
+#This script will install the required packages for the oratorIQ project
 
 set -e #Stop the script if any command fails
 
 DEBUG=false # Set to true to print commands for debugging
+
+# Node setup
 NODE_VERSION=15.14.0
-USE_CUDA=false
+
+# Whisper setup
+WHISPER_MODEL=base # See table below for model sizes
+USE_CUDA=false     # Use CUDA for GPU acceleration
+
+# | Model     | Disk   | RAM     |
+# |-----------|--------|---------|
+# | tiny      |  75 MB | ~390 MB |
+# | tiny.en   |  75 MB | ~390 MB |
+# | base      | 142 MB | ~500 MB |
+# | base.en   | 142 MB | ~500 MB |
+# | small     | 466 MB | ~1.0 GB |
+# | small.en  | 466 MB | ~1.0 GB |
+# | medium    | 1.5 GB | ~2.6 GB |
+# | medium.en | 1.5 GB | ~2.6 GB |
+# | large-v1  | 2.9 GB | ~4.7 GB |
+# | large     | 2.9 GB | ~4.7 GB |
 
 if [ "$DEBUG" = true ]; then
     echo "Debug mode enabled"
@@ -72,7 +85,6 @@ npm install express
 echo "Node.js project has been created and required dependancy have been installed."
 
 # ------> WHISPER INSTALLATION <------
-
 if ! command -v pip &>/dev/null; then
     echo "pip could not be found. Installing..."
     sudo apt install -y python3-pip
@@ -91,9 +103,9 @@ fi
 
 # Create and activate virtual environment
 echo "Creating and activating virtual environment..."
-sudo apt install -y python3.10-venv
+sudo apt install -y python3.10-venv make
 python3 -m venv whisper_env
-source whisper_env/bin/activate #To access the virtual environment, run 'source whisper_env/bin/activate'.
+source whisper_env/bin/activate
 
 # Prepare Whisper install
 echo "Preparing Whisper..."
@@ -104,6 +116,6 @@ sudo apt-get install -y python3-dev build-essential ffmpeg
 echo "Installing Whisper..."
 pip install -U openai-whisper
 
-echo "Whisper installation complete."
-
+echo "Whisper installation completed."
 echo "Project installation complete!"
+echo "Important: to manually use Whisper in the CLI, run 'source whisper_env/bin/activate' in the project folder to load the python env."
