@@ -1,12 +1,21 @@
 # Speech-to-Text (STT) Framework
-  - Mozilla DeepSpeech (https://github.com/mozilla/DeepSpeech)
-  
+
+- Mozilla DeepSpeech (https://github.com/mozilla/DeepSpeech)
+
 # Natural Language Processing (NLP)
-  - NLP (https://github.com/axa-group/nlp.js)
+
+- NLP (https://github.com/axa-group/nlp.js)
 
 # Backend Framework
-  - Node.js (https://nodejs.org/en)
+
+- Node.js (https://nodejs.org/en)
 
 # Other ressources
-  ## Machine Learning 
-  - TensorFlow (https://www.tensorflow.org/learn)
+
+## Machine Learning
+
+- TensorFlow (https://www.tensorflow.org/learn)
+
+# Model
+
+- Model: https://huggingface.co/spaces/bofenghuang/speech-to-text
