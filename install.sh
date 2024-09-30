@@ -7,7 +7,7 @@ set -e #Stop the script if any command fails
 DEBUG=false # Set to true to print commands for debugging
 
 # Node setup
-NODE_VERSION=15.14.0
+NODE_VERSION=20.17.0
 
 # Whisper setup
 WHISPER_MODEL=base # See table below for model sizes
@@ -39,7 +39,7 @@ sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/
 sudo apt update && sudo apt upgrade -y
 
 # ------> NODE INSTALLATION <------
-sudo apt install -y curl
+sudo apt install -y curl make
 
 # Function to install NVM
 install_nvm() {
@@ -73,8 +73,22 @@ echo ">>Installing required Node.js packages..."
 echo ">>Installing Whisper binding..."
 npm i nodejs-whisper
 
+# Install expect for automated model download
+sudo apt install expect -y
+
+install_whisper_model() {
+    expect -c "
+    spawn npx nodejs-whisper download
+    expect \"Which model would you like to download?\"
+    send \"$WHISPER_MODEL\r\"
+    expect \"Would you like to use CUDA for GPU acceleration?\"
+    send \"$USE_CUDA\r\"
+    expect eof
+    "
+}
+
 echo ">>Installing whisper model..."
-npx nodejs-whisper download # Prompted for model download
+install_whisper_model
 
 echo ">>Installing NLP..."
 npm install node-nlp

@@ -24,3 +24,5 @@
 # Potentials Models
 
 - Model: https://huggingface.co/spaces/bofenghuang/speech-to-text
+
+<!-- npm install nodemon --save-dev -->
