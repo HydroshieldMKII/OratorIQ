@@ -10,8 +10,8 @@ DEBUG=false # Set to true to print commands for debugging
 NODE_VERSION=20.17.0
 
 # Whisper setup
-WHISPER_MODEL=base # See table below for model sizes
-USE_CUDA=false     # Use CUDA for GPU acceleration
+WHISPER_MODEL=base # See table below for model name
+USE_CUDA=n         # Use CUDA for GPU acceleration (y/n)
 
 # | Model     | Disk   | RAM     |
 # |-----------|--------|---------|
@@ -32,7 +32,7 @@ if [ "$DEBUG" = true ]; then
 fi
 
 # ------> SYSTEM UPDATE <------
-# Disable the needrestart service to prevent the script from hanging
+# Disable the needrestart service
 sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
 
 # Update package lists and upgrade installed packages
@@ -102,11 +102,6 @@ echo ">>Node.js project has been created and required dependancy have been insta
 if ! command -v pip &>/dev/null; then
     echo ">>pip could not be found. Installing..."
     sudo apt install -y python3-pip
-fi
-
-if ! command -v git &>/dev/null; then
-    echo ">>git could not be found. Installing..."
-    sudo apt install -y git
 fi
 
 # Install virtualenv if not already installed
