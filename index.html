@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oratorIQ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+        }
+
+        .results {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>oratorIQ - Upload Audio for Transcription and NLP Analysis</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="audio" accept="audio/*" required><br><br>
+        <button type="submit">Upload & Analyze</button>
+    </form>
+    <div class="results" id="results"></div>
+
+    <h2>Ask a Custom Question</h2>
+    <form id="questionForm">
+        <input type="text" id="customQuestion" placeholder="Type your question here" required>
+        <button type="submit">Ask</button>
+    </form>
+    <div class="questionResults" id="questionResults"></div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+
+            const formData = new FormData();
+            const fileInput = document.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+
+            // Sanitize file name
+            const sanitizedFileName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+            const sanitizedFile = new File([file], sanitizedFileName, { type: file.type });
+
+            formData.append('audio', sanitizedFile);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                resultsDiv.innerHTML = `
+                    <h3>Transcribed Text:</h3>
+                    <p>${result.transcribedText}</p>
+                    <h3>Analysis:</h3>
+                    <p>Sentiment Score: ${result.analysis.sentiment.vote} (${result.analysis.sentiment.score})</p>
+                    <p>Number of Questions: ${result.analysis.questionCount}</p>
+                `;
+            } catch (error) {
+                resultsDiv.innerHTML = '<p>Error processing the request. Please check logs.</p>';
+            }
+        });
+
+        // Handle custom question submission
+        document.getElementById('questionForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const questionResultsDiv = document.getElementById('questionResults');
+            questionResultsDiv.innerHTML = '<p>Loading...</p>';
+
+            const questionInput = document.getElementById('customQuestion');
+            const question = questionInput.value;
+
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question: question })
+                });
+
+                const result = await response.json();
+                questionResultsDiv.innerHTML = `
+                    <h3>Your Question:</h3>
+                    <p>${result.question}</p>
+                    <h3>Answer:</h3>
+                    <p>${result.answer}</p>
+                    <h3>Sentiment:</h3>
+                    <p>Sentiment Score: ${result.sentiment.vote} (${result.sentiment.score})</p>
+                `;
+            } catch (error) {
+                questionResultsDiv.innerHTML = '<p>Error processing the request. Please check logs.</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

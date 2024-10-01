@@ -10,8 +10,8 @@ DEBUG=false # Set to true to print commands for debugging
 NODE_VERSION=20.17.0
 
 # Whisper setup
-WHISPER_MODEL=base # See table below for model name
-USE_CUDA=n         # Use CUDA for GPU acceleration (y/n)
+WHISPER_MODEL=small # See table below for model name
+USE_CUDA=y          # Use CUDA for GPU acceleration (y/n)
 
 # | Model     | Disk   | RAM     |
 # |-----------|--------|---------|
@@ -64,7 +64,11 @@ echo ">>Node.js version $NODE_VERSION has been installed."
 
 # Create project
 echo ">>Creating a new Node.js project..."
-mkdir -p $HOME/oratorIQ && cd $HOME/oratorIQ
+mkdir -p $HOME/oratorIQ && mkdir -p $HOME/oratorIQ/public && mkdir -p $HOME/oratorIQ/uploads
+mv index.html $HOME/oratorIQ/public/index.html
+mv server.mjs $HOME/oratorIQ/server.mjs
+
+cd $HOME/oratorIQ
 npm init -y
 
 # Install required Node.js packages
@@ -94,7 +98,7 @@ echo ">>Installing NLP..."
 npm install node-nlp
 
 echo ">>Installing Express..."
-npm install express
+npm install express express-fileupload
 
 echo ">>Node.js project has been created and required dependancy have been installed."
 
