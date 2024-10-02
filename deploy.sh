@@ -1,8 +1,8 @@
-mkdir -p $HOME/oratorIQ 
+mkdir -p $HOME/oratorIQ
 mkdir -p $HOME/oratorIQ/uploads
 
 cp -r app/* $HOME/oratorIQ
 
-cd $HOME/oratorIQ
+cd $HOME/oratorIQ/app
 
 npm install

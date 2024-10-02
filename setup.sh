@@ -67,7 +67,7 @@ sudo apt install expect -y
 
 echo ">>Installing whisper model..."
 expect -c "
-    spawn npx nodejs-whisper download
+    spawn npx --yes nodejs-whisper download
     expect \"Which model would you like to download?\"
     send \"$WHISPER_MODEL\r\"
     expect \"Would you like to use CUDA for GPU acceleration?\"
