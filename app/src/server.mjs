@@ -192,8 +192,9 @@ app.put('/model/add', async (req, res) => {
 });
 
 // Initialize training data
-addQuestionTrainingData().then(() => {
-    app.listen(port, () => {
-        console.log(`Server running on http://localhost:${port}`);
-    });
+await addQuestionTrainingData()
+
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+    console.log(`Host forwarded to http://localhost:3030`);
 });
