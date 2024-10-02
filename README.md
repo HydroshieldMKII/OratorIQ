@@ -1,28 +1,40 @@
-# Speech-to-Text (STT) Framework
+# OratorIQ
 
-- Whisper (https://github.com/openai/whisper)
+Welcome to OratorIQ, a powerful application for Speech-to-Text (STT) and Natural Language Processing (NLP) designed to help and improve classes at the Cegep of Shawinigan.
 
-# Natural Language Processing (NLP)
+## Installation
 
-- NLP (https://github.com/axa-group/nlp.js)
+### Standalone Installer
 
-# Backend Framework
+- **Linux**: Use our standalone installer bash script.
 
-- Node.js (https://nodejs.org/en)
+### Vagrant
 
-## Packages
+- [Vagrant](https://developer.hashicorp.com/vagrant): Simplify your development environment setup.
 
-- Express (https://expressjs.com)
-- Nodejs-Whisper (https://www.npmjs.com/package/nodejs-whisper)
+## Speech-to-Text (STT) Framework
 
-# Other ressources
+- [Whisper](https://github.com/openai/whisper): A versatile STT framework by OpenAI.
 
-## Machine Learning
+## Natural Language Processing (NLP)
 
-- TensorFlow (https://www.tensorflow.org/learn)
+- [NLP.js](https://github.com/axa-group/nlp.js): A comprehensive NLP library.
 
-# Potentials Models
+## Backend Framework
 
-- Model: https://huggingface.co/spaces/bofenghuang/speech-to-text
+- [Node.js](https://nodejs.org/en): A powerful JavaScript runtime for building scalable network applications.
 
-<!-- npm install nodemon --save-dev -->
+### Packages
+
+- [Express](https://expressjs.com): Fast, unopinionated, minimalist web framework for Node.js.
+- [Nodejs-Whisper](https://www.npmjs.com/package/nodejs-whisper): Node.js bindings for the Whisper STT framework.
+
+## Other Resources
+
+### Machine Learning
+
+- [TensorFlow](https://www.tensorflow.org/learn): An end-to-end open-source platform for machine learning.
+
+## Potential Models
+
+- [Hugging Face Model](https://huggingface.co/spaces/bofenghuang/speech-to-text): Explore potential models for speech-to-text applications.
