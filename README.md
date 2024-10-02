@@ -2,6 +2,20 @@
 
 Welcome to OratorIQ, a powerful application for Speech-to-Text (STT) and Natural Language Processing (NLP) designed to help and improve classes at the Cegep of Shawinigan.
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [Standalone Installer](#standalone-installer)
+  - [Vagrant](#vagrant)
+- [Speech-to-Text (STT) Framework](#speech-to-text-stt-framework)
+- [Natural Language Processing (NLP)](#natural-language-processing-nlp)
+- [Backend Framework](#backend-framework)
+  - [Packages](#packages)
+- [Other Resources](#other-resources)
+  - [Machine Learning](#machine-learning)
+- [Potential Models](#potential-models)
+  - [Hugging Face](#hugging-face-model)
+
 ## Installation
 
 ### Standalone Installer
@@ -37,4 +51,7 @@ Welcome to OratorIQ, a powerful application for Speech-to-Text (STT) and Natural
 
 ## Potential Models
 
-- [Hugging Face Model](https://huggingface.co/spaces/bofenghuang/speech-to-text): Explore potential models for speech-to-text applications.
+### Hugging Face Model
+
+- [bofenghuang/speech-to-text](https://huggingface.co/spaces/bofenghuang/speech-to-text): Transcribe long-form microphone or audio inputs
+- [hf-audio/whisper-large-v3-turbo](https://huggingface.co/spaces/hf-audio/whisper-large-v3-turbo): Transcribe long-form microphone or audio inputs
