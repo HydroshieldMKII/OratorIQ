@@ -13,9 +13,18 @@ app.use(express.static('src/public')); // Serve static files (for HTML)
 app.use(fileUpload());  // For handling file uploads
 app.use(express.json()); // To parse JSON bodies
 
+const dirname = path.dirname(new URL(import.meta.url).pathname);
+const UPLOAD_DIRECTORY = path.join(dirname, 'uploads');
+
+fs.mkdir(UPLOAD_DIRECTORY, { recursive: true }, (err) => {
+  if (err) throw err;
+})
+
 // Whisper and NLP options
 const options = {
     modelName: 'small',  // Whisper model to use
+    autoDownloadModelName: 'small',
+    language: 'fr',
     withCuda: false,    // Set to true if CUDA is available
     verbose: true,
     removeWavFileAfterTranscription: true  // Remove file after processing
@@ -147,8 +156,7 @@ app.post('/upload', async (req, res) => {
     }
 
     const audioFile = req.files.audio;
-    const __dirname = path.dirname(new URL(import.meta.url).pathname);
-    const uploadPath = path.join(__dirname, 'uploads', audioFile.name);
+    const uploadPath = path.join(UPLOAD_DIRECTORY, audioFile.name);
 
     // Save the file to the uploads directory
     audioFile.mv(uploadPath, async function (err) {

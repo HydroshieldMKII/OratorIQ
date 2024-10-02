@@ -62,18 +62,6 @@ nvm use $NODE_VERSION
 
 echo ">>Node.js version $NODE_VERSION has been installed."
 
-# Install expect for automated model download
-sudo apt install expect -y
-
-echo ">>Installing whisper model..."
-expect -c "
-    spawn npx --yes nodejs-whisper download
-    expect \"Which model would you like to download?\"
-    send \"$WHISPER_MODEL\r\"
-    expect \"Would you like to use CUDA for GPU acceleration?\"
-    send \"$USE_CUDA\r\"
-    expect eof
-"
 
 # ------> WHISPER INSTALLATION <------
 if ! command -v pip &>/dev/null; then
