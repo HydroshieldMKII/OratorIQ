@@ -9,7 +9,7 @@ const app = express();
 const port = 3000;
 
 // Middleware
-app.use(express.static('public')); // Serve static files (for HTML)
+app.use(express.static('src/public')); // Serve static files (for HTML)
 app.use(fileUpload());  // For handling file uploads
 app.use(express.json()); // To parse JSON bodies
 
