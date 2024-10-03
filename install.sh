@@ -1,6 +1,5 @@
 #!/bin/bash
 
-#chmod +x ./install.sh && chmod +x ./setup.sh && chmod +x ./deploy.sh
-
-./setup.sh
-./deploy.sh
+chmod +x ./setup.sh && ./setup.sh
+chmod +x ./deploy.sh && ./deploy.sh
+source ~/.bashrc
