@@ -1,15 +1,19 @@
+import { fileURLToPath } from 'url';
+import path from 'path';
 import express from 'express';
 import fileUpload from 'express-fileupload';
-import path from 'path';
 import whisper from 'nodejs-whisper';
 import { NlpManager } from 'node-nlp';
 import fs from 'fs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3000;
 
 // Middleware
-app.use(express.static('src/public')); // Serve static files (for HTML)
+app.use(express.static(path.join(__dirname, '/public'))); // Serve static files (for HTML)
 app.use(fileUpload());  // For handling file uploads
 app.use(express.json()); // To parse JSON bodies
 
