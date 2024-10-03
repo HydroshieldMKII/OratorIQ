@@ -5,7 +5,7 @@
   "main": "src/server.mjs",
   "scripts": {
     "dev": "node src/server.mjs",
-    "postinstall": "./node_modules/nodejs-whisper/cpp/whisper.cpp/models/download-ggml-model.sh medium;"
+    "postinstall": "patch-package; ./node_modules/nodejs-whisper/cpp/whisper.cpp/models/download-ggml-model.sh medium;"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +14,7 @@
     "express": "^4.21.0",
     "express-fileupload": "^1.5.1",
     "node-nlp": "^4.27.0",
-    "nodejs-whisper": "^0.1.18"
+    "nodejs-whisper": "^0.1.18",
+    "patch-package": "^8.0.0"
   }
 }

@@ -39,7 +39,7 @@ sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/
 sudo apt update && sudo apt upgrade -y
 
 # ------> NODE INSTALLATION <------
-sudo apt install -y curl make
+sudo apt install -y curl make cmake
 
 # Function to install NVM
 install_nvm() {
