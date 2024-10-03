@@ -4,7 +4,8 @@
   "description": "",
   "main": "src/server.mjs",
   "scripts": {
-    "dev": "node src/server.mjs"
+    "dev": "node src/server.mjs",
+    "postinstall": "./node_modules/nodejs-whisper/cpp/whisper.cpp/models/download-ggml-model.sh medium;"
   },
   "keywords": [],
   "author": "",

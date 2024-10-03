@@ -31,8 +31,8 @@ const whisperOption = {
 }
 
 const options = {
-    modelName: 'small',  // Whisper model to use
-    autoDownloadModelName: 'small',
+    modelName: 'medium',  // Whisper model to use
+    autoDownloadModelName: 'medium',
     whisperOptions: whisperOption,
     withCuda: false,    // Set to true if CUDA is available
     verbose: true,

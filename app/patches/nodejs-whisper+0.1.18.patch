@@ -1,0 +1,43 @@
+diff --git a/node_modules/nodejs-whisper/dist/.WhisperHelper.js.swp b/node_modules/nodejs-whisper/dist/.WhisperHelper.js.swp
+new file mode 100644
+index 0000000..d512185
+Binary files /dev/null and b/node_modules/nodejs-whisper/dist/.WhisperHelper.js.swp differ
+diff --git a/node_modules/nodejs-whisper/dist/.whisper.js.swp b/node_modules/nodejs-whisper/dist/.whisper.js.swp
+new file mode 100644
+index 0000000..fb84ef8
+Binary files /dev/null and b/node_modules/nodejs-whisper/dist/.whisper.js.swp differ
+diff --git a/node_modules/nodejs-whisper/dist/WhisperHelper.js b/node_modules/nodejs-whisper/dist/WhisperHelper.js
+index df5fec2..9862fc0 100644
+--- a/node_modules/nodejs-whisper/dist/WhisperHelper.js
++++ b/node_modules/nodejs-whisper/dist/WhisperHelper.js
+@@ -24,7 +24,7 @@ const constructCommand = (filePath, args) => {
+         throw new Error(errors.join('\n'));
+     }
+     const modelName = constants_1.MODEL_OBJECT[args.modelName];
+-    let command = `./main  ${constructOptionsFlags(args)} -l ${((_a = args.whisperOptions) === null || _a === void 0 ? void 0 : _a.language) ? (_b = args.whisperOptions) === null || _b === void 0 ? void 0 : _b.language : "auto"} -m ./models/${modelName}  -f ${filePath}`;
++    let command = `./bin/main  ${constructOptionsFlags(args)} -l ${((_a = args.whisperOptions) === null || _a === void 0 ? void 0 : _a.language) ? (_b = args.whisperOptions) === null || _b === void 0 ? void 0 : _b.language : "auto"} -m ./models/${modelName}  -f ${filePath}`;
+     return command;
+ };
+ exports.constructCommand = constructCommand;
+diff --git a/node_modules/nodejs-whisper/dist/whisper.js b/node_modules/nodejs-whisper/dist/whisper.js
+index c47302f..1da6d69 100644
+--- a/node_modules/nodejs-whisper/dist/whisper.js
++++ b/node_modules/nodejs-whisper/dist/whisper.js
+@@ -16,7 +16,7 @@ exports.executeCppCommand = exports.whisperShell = void 0;
+ const path_1 = __importDefault(require("path"));
+ const shelljs_1 = __importDefault(require("shelljs"));
+ const WHISPER_CPP_PATH = path_1.default.join(__dirname, '..', 'cpp', 'whisper.cpp');
+-const WHISPER_CPP_MAIN_PATH = './main';
++const WHISPER_CPP_MAIN_PATH = './bin/main';
+ const projectDir = process.cwd();
+ const defaultShellOptions = {
+     silent: true,
+@@ -62,7 +62,7 @@ function executeCppCommand(command, verbose, withCuda) {
+             shelljs_1.default.cd(WHISPER_CPP_PATH);
+             if (!shelljs_1.default.which(WHISPER_CPP_MAIN_PATH)) {
+                 console.log('[Nodejs-whisper] whisper.cpp not initialized.');
+-                const makeCommand = withCuda ? 'WHISPER_CUDA=1 make -j' : 'make -j';
++                const makeCommand = withCuda ? 'WHISPER_CUDA=1 make -j' : 'cmake -DLLAMA_NATIVE=OFF; make -j';
+                 shelljs_1.default.exec(makeCommand);
+                 if (!shelljs_1.default.which(WHISPER_CPP_MAIN_PATH)) {
+                     throw new Error("[Nodejs-whisper] 'make' command failed. Please run 'make' command in /whisper.cpp directory.");
