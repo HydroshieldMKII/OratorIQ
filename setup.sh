@@ -68,9 +68,11 @@ sudo apt install expect -y
 echo ">>Installing whisper model..."
 expect -c "
     spawn npx --yes nodejs-whisper download
-    expect \"Which model would you like to download?\"
+    expect \"[Nodejs-whisper] Enter model name (e.g. 'tiny.en') or 'cancel' to exit
+(ENTER for tiny.en):\"
     send \"$WHISPER_MODEL\r\"
-    expect \"Would you like to use CUDA for GPU acceleration?\"
+    expect \"[Nodejs-whisper] Do you want to use CUDA for compilation? (y/n)
+(ENTER for n):\"
     send \"$USE_CUDA\r\"
     expect eof
 "
