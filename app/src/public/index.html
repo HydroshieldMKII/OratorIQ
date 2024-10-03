@@ -12,7 +12,9 @@
         }
 
         h1,
-        h2 {
+        h2,
+        h3,
+        h4 {
             text-align: center;
         }
 
@@ -64,16 +66,37 @@
                     method: 'POST',
                     body: formData
                 });
-
                 const result = await response.json();
+                // {
+                //     transcribedText: string,
+                //     const questionAnalysis: {
+                //         questions: {
+                //             sentence: any;
+                //             sentiment: any;
+                //         }[];
+                //         questionCount: number;
+                //     }
+                // }
+
+                let questionsHtml = '';
+                result.questionAnalysis.questions.forEach(question => {
+                    questionsHtml += `
+                        <h3>Question:</h3>
+                        <p>${question.sentence}</p>
+                        <h3>Sentiment:</h3>
+                        <p>Sentiment Score: ${question.sentiment.vote} (${question.sentiment.score})</p>
+                    `;
+                });
+
                 resultsDiv.innerHTML = `
                     <h3>Transcribed Text:</h3>
                     <p>${result.transcribedText}</p>
                     <h3>Analysis:</h3>
-                    <p>Sentiment Score: ${result.analysis.sentiment.vote} (${result.analysis.sentiment.score})</p>
-                    <p>Number of Questions: ${result.analysis.questionCount}</p>
+                    <p>Number of Questions: ${result.questionAnalysis.questionCount}</p>
+                    ${questionsHtml}
                 `;
             } catch (error) {
+                console.error(error);
                 resultsDiv.innerHTML = '<p>Error processing the request. Please check logs.</p>';
             }
         });
@@ -83,32 +106,7 @@
             event.preventDefault();
 
             const questionResultsDiv = document.getElementById('questionResults');
-            questionResultsDiv.innerHTML = '<p>Loading...</p>';
-
-            const questionInput = document.getElementById('customQuestion');
-            const question = questionInput.value;
-
-            try {
-                const response = await fetch('/ask', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ question: question })
-                });
-
-                const result = await response.json();
-                questionResultsDiv.innerHTML = `
-                    <h3>Your Question:</h3>
-                    <p>${result.question}</p>
-                    <h3>Answer:</h3>
-                    <p>${result.answer}</p>
-                    <h3>Sentiment:</h3>
-                    <p>Sentiment Score: ${result.sentiment.vote} (${result.sentiment.score})</p>
-                `;
-            } catch (error) {
-                questionResultsDiv.innerHTML = '<p>Error processing the request. Please check logs.</p>';
-            }
+            questionResultsDiv.innerHTML = '<h4 style="color: red;">Not implemented yet</h4>';
         });
     </script>
 </body>
