@@ -5,67 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>oratorIQ</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding-top: 20px;
-        }
-
-        h1 {
-            color: #343a40;
-        }
-
-        h2 {
-            color: #495057;
-        }
-
-        .custom-btn {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .custom-btn:hover {
-            background-color: #0056b3;
-        }
-
-        .card {
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .table th,
-        .table td {
-            vertical-align: middle;
-        }
-
-        .table thead {
-            background-color: #007bff;
-            color: white;
-        }
-    </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg">
                 <h1 class="text-center mb-4">oratorIQ - Upload Audio for Transcription and NLP Analysis</h1>
-                <!-- Upload form -->
-                <div class="card p-4 mb-5">
+
                     <form id="uploadForm" enctype="multipart/form-data" class="text-center">
-                        <div class="mb-3">
                             <input type="file" name="audio" accept="audio/*" class="form-control" required>
-                        </div>
                         <button id="fileSubmit" type="submit" class="btn custom-btn">Upload & Analyze</button>
                     </form>
-                </div>
                 <!-- Results Section -->
-                <div class="card p-4 mb-5" id="results">
                     <div id="statusBadge" class="badge bg-info">Upload a file to start the process</div>
                     <h3 class="text-center">Results</h3>
-                    <div id="resultsDiv">Transcribed audio will be displayed here</div>
+                    <div id="resultsDiv">...</div>
+		    <!--
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -75,11 +28,12 @@
                             </tr>
                         </thead>
                         <tbody id="questionsTableBody">
-                            <!-- Questions results will be displayed here -->
+
                         </tbody>
                     </table>
-                </div>
+		    -->
 
+		    <!--
                 <div class="card p-4">
                     <h2 class="text-center">Ask a Custom Question</h2>
                     <form id="questionForm" class="text-center">
@@ -91,12 +45,11 @@
                     </form>
                     <div id="questionResults" class="text-center mt-3"></div>
                 </div>
+		    -->
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async function (event) {
@@ -105,10 +58,11 @@
             const uploadButton = document.getElementById('fileSubmit');
             uploadButton.disabled = true;
 
+	    const started_at =  new Date();
             const resultStatus = document.getElementById('statusBadge');
-            resultStatus.textContent = 'Processing...';
+	    resultStatus.textContent = started_at.toLocaleTimeString();
+            resultStatus.textContent += ' Traitement...';
             resultStatus.classList = 'badge bg-warning';
-
 
             const formData = new FormData();
             const fileInput = document.querySelector('input[type="file"]');
@@ -129,15 +83,14 @@
 
                 // Update transcribed text
                 resultsDiv.innerHTML = `
-                    <h3>Transcribed Text:</h3>
                     <p>${result.transcribedText}</p>
-                    <h3>Analysis:</h3>
-                    <p>Number of Questions: ${result.questionAnalysis.questionCount}</p>
                 `;
+	        // <h3>Analysis:</h3>
+	        // <p>Number of Questions: ${result.questionAnalysis.questionCount}</p>
 
                 // Populate the questions table
                 const questionsTableBody = document.getElementById('questionsTableBody');
-                questionsTableBody.innerHTML = ''; // Clear any existing rows
+                // questionsTableBody.innerHTML = ''; // Clear any existing rows
 
                 result.questionAnalysis.questions.forEach(question => {
                     const row = document.createElement('tr');
@@ -146,9 +99,10 @@
                         <td>${question.sentiment.vote}</td>
                         <td>${question.sentiment.score}</td>
                     `;
-                    questionsTableBody.appendChild(row);
+                    // questionsTableBody.appendChild(row);
                 });
-                resultStatus.textContent = 'Done at ' + new Date().toLocaleTimeString();
+		const completed_at =  new Date();
+		resultStatus.textContent = `Complété en ${(completed_at - started_at) / 1000 } secondes`;
                 resultStatus.classList = 'badge bg-success';
             } catch (error) {
                 console.error(error);
@@ -159,12 +113,14 @@
         });
 
         // Handle custom question submission
+	    /*
         document.getElementById('questionForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const questionResultsDiv = document.getElementById('questionResults');
             questionResultsDiv.innerHTML = '<h4 style="color: red;">Not implemented yet</h4>';
         });
+	   */
     </script>
 </body>
 
