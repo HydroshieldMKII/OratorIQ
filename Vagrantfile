@@ -4,8 +4,8 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/jammy64"
   
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4096
-    v.cpus = 2
+    v.memory = 8192
+    v.cpus = 6
   end
 
   config.vm.synced_folder "app/", "/app"
