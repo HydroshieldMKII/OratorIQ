@@ -150,10 +150,12 @@ async function addQuestionTrainingData() {
     await manager.train();
 }
 
-// Initialize training data
-await addQuestionTrainingData()
+async function initializeApp() {
+    await addQuestionTrainingData();
 
-app.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}`);
-    console.log(`Host forwarded to http://localhost:3030`);
-});
+    app.listen(port, () => {
+        console.log(`Server running on http://localhost:${port}`);
+    });
+}
+
+initializeApp();
