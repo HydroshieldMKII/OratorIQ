@@ -7,11 +7,16 @@ Un système sophistiqué de transcription de cours qui convertit les fichiers au
 ## Fonctionnalités
 
 - **Téléchargement et traitement audio** : Interface glisser-déposer pour faciliter le téléchargement de fichiers audio
-- **Transcription en temps réel** : Traitement avancé de la parole en texte avec suivi de progression
 - **Résumé intelligent** : Analyse de contenu alimentée par l'IA et extraction de points clés
 - **Génération interactive de Q&R** : Questions automatisées basées sur le contenu du cours
 - **Interface moderne** : Interface propre et responsive avec support de thème sombre/clair
 - **Traitement en lot** : Prise en charge de plusieurs fichiers audio pour un traitement simultané
+
+## Avantages
+
+- **Gain de temps** : Convertit rapidement les cours audio en texte et en résumés
+- **Application légère** : Conçu pour être rapide et efficace, même avec de gros fichiers audio
+- **Hébergement facile** : Déployable en une seule commande via Docker pour une configuration simple, en gardant le contrôle de vos données
 
 ## Flux de travail de l'application
 
@@ -40,7 +45,7 @@ Accédez à votre transcription, résumé et questions générées dans un forma
 ## Démarrage rapide
 
 ### Prérequis
-- Docker et Docker Compose installés sur votre système
+- [Docker](https://docs.docker.com/engine/install/) installés sur votre système
 
 ### Configuration
 
@@ -52,7 +57,7 @@ cd OratorIQ
 
 2. **Déployer l'application** :
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 
 3. **Accéder à l'application** :
