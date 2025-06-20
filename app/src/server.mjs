@@ -39,6 +39,10 @@ const options = {
     removeWavFileAfterTranscription: true  // Remove file after processing
 };
 
+let lastCorpus = '';
+// ensure uploads folder exists
+fs.mkdirSync(path.join(__dirname, 'uploads'), { recursive: true });
+
 // NLP Manager initialization (assuming French language)
 const manager = new NlpManager({ languages: ['fr'], nlu: { useNoneFeature: false } });
 
@@ -107,6 +111,8 @@ app.post('/upload', async (req, res) => {
         // Delete the uploaded file after processing
         fs.unlinkSync(uploadPath);
 
+        lastCorpus = corpus;
+
         res.json({
             transcribedText: corpus,
             questionAnalysis: questionAnalysis,
@@ -115,15 +121,51 @@ app.post('/upload', async (req, res) => {
 });
 
 app.post('/ask', async (req, res) => {
-    // Ask a question based on the latest corpus (implementation needed)
+    const { question } = req.body;
+    if (!question) {
+        return res.status(400).json({ error: 'Question required' });
+    }
+    if (!lastCorpus) {
+        return res.status(400).json({ error: 'No corpus available. Upload audio first.' });
+    }
+    const words = question.toLowerCase().split(/\s+/);
+    const sentences = lastCorpus.split(/(?<=[.!?])\s+/);
+    let bestSentence = '';
+    let bestScore = 0;
+    for (const sentence of sentences) {
+        let score = 0;
+        const lower = sentence.toLowerCase();
+        for (const w of words) {
+            if (lower.includes(w)) score++;
+        }
+        if (score > bestScore) {
+            bestScore = score;
+            bestSentence = sentence;
+        }
+    }
+    if (bestSentence) {
+        return res.json({ answer: bestSentence });
+    }
+    return res.json({ answer: 'Aucune réponse pertinente trouvée.' });
 });
 
 app.put('/train', async (req, res) => {
-    // Train NLP model (implementation needed)
+    const { pattern, intent } = req.body;
+    if (!pattern || !intent) {
+        return res.status(400).json({ error: 'pattern and intent required' });
+    }
+    await manager.addDocument('fr', pattern, intent);
+    await manager.train();
+    res.json({ message: 'Training updated' });
 });
 
 app.put('/model/add', async (req, res) => {
-    // Add whisper model (implementation needed)
+    const { modelName } = req.body;
+    if (!modelName) {
+        return res.status(400).json({ error: 'modelName is required' });
+    }
+    options.modelName = modelName;
+    res.json({ message: `Model set to ${modelName}` });
 });
 
 // Define questions patterns
