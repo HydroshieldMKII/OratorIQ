@@ -20,7 +20,7 @@ Welcome to OratorIQ, a powerful application for Speech-to-Text (STT) and Natural
 
 ### Standalone Installer
 
-- **Linux**: Use our standalone installer bash script.
+- **Linux**: Run `./install.sh` to install all dependencies.
 
 ### Vagrant
 
@@ -55,3 +55,21 @@ Welcome to OratorIQ, a powerful application for Speech-to-Text (STT) and Natural
 
 - [bofenghuang/speech-to-text](https://huggingface.co/spaces/bofenghuang/speech-to-text): Transcribe long-form microphone or audio inputs
 - [hf-audio/whisper-large-v3-turbo](https://huggingface.co/spaces/hf-audio/whisper-large-v3-turbo): Transcribe long-form microphone or audio inputs
+
+## Usage
+
+1. Install dependencies:
+
+   ```bash
+   cd app
+   npm install
+   ```
+
+2. Start the server:
+
+   ```bash
+   npm run dev
+   ```
+
+3. Open `http://localhost:3000` in your browser. Upload an audio file and wait for transcription.
+   Use the **Ask a Custom Question** form to query the transcript.
