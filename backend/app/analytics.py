@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 # Get Ollama URL from environment
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
-DEFAULT_MODEL = "sadiq‑bd/llama3.2‑1b‑uncensored" #"krith/meta-llama-3.2-1b-instruct-uncensored" #"smollm" #"sadiq-bd/llama3.2-1b-uncensored"
+DEFAULT_MODEL = "vatistasdim/boXai" #"krith/meta-llama-3.2-1b-instruct-uncensored" #"smollm" #"sadiq-bd/llama3.2-1b-uncensored"
 
 def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
     """Call the self-hosted Ollama LLM"""
