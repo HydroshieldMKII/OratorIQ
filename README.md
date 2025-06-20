@@ -1,16 +1,72 @@
-# OratorV2
+# OratorIQ
 
-This project provides a proof-of-concept lecture transcription system. It
-contains a FastAPI backend for uploading audio files and a React frontend for
-interacting with the API. Uploaded audio is transcribed and a brief summary with
-sample questions is stored for later review.
+Un système sophistiqué de transcription de cours qui convertit les fichiers audio en contenu structuré avec des résumés automatisés et des questions générées automatiquement. Construit avec un backend FastAPI et un frontend React pour un traitement audio et une génération de contenu fluides.
 
-## Quick start
+![Aperçu de l'application](assets/menu.png)
 
-1. Build and run the services using Docker Compose:
+## Fonctionnalités
 
+- **Téléchargement et traitement audio** : Interface glisser-déposer pour faciliter le téléchargement de fichiers audio
+- **Transcription en temps réel** : Traitement avancé de la parole en texte avec suivi de progression
+- **Résumé intelligent** : Analyse de contenu alimentée par l'IA et extraction de points clés
+- **Génération interactive de Q&R** : Questions automatisées basées sur le contenu du cours
+- **Interface moderne** : Interface propre et responsive avec support de thème sombre/clair
+
+## Flux de travail de l'application
+
+### 1. Téléchargez votre audio
+Commencez par télécharger votre fichier audio de cours via l'interface.
+
+![Interface principale](assets/menu.png)
+
+### 2. Traitement en cours
+Suivez la progression en temps réel pendant que votre audio est transcrit et analysé.
+
+![Vue de traitement](assets/process.png)
+
+![Vue de traitement étendue](assets/process_expended.png)
+
+### 3. Traitement terminé
+Recevez une notification lorsque votre cours a été entièrement traité et analysé.
+
+![Traitement terminé](assets/done.png)
+
+### 4. Voir les résultats
+Accédez à votre transcription, résumé et questions générées dans un format propre et organisé.
+
+![Tableau de bord des résultats](assets/result.png)
+
+## Démarrage rapide
+
+### Prérequis
+- Docker et Docker Compose installés sur votre système
+
+### Configuration
+
+1. **Cloner le dépôt** :
+```bash
+git clone https://github.com/HydroshieldMKII/OratorIQ
+cd OratorIQ
+```
+
+2. **Déployer l'application** :
 ```bash
 docker-compose up --build
 ```
 
-2. Open `http://localhost:3000` to access the frontend UI.
+3. **Accéder à l'application** :
+    - Ouvrez `http://localhost:3000` pour accéder à l'interface utilisateur
+
+## Stack technologique
+
+- **Backend** : FastAPI, Python, SQLAlchemy
+- **Frontend** : React, Vite, Tailwind CSS
+- **Traitement audio** : Openai-whisper pour les APIs de parole en texte
+- **Intégration IA** : Ollama pour la résumé de contenu et la génération de questions
+- **Base de données** : SQLite
+- **Déploiement** : Docker, Docker Compose
+
+## Licence
+
+Ce projet est une preuve de concept à des fins éducatives.
+

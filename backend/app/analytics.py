@@ -175,8 +175,7 @@ def wait_for_model_ready(model: str = DEFAULT_MODEL, max_wait_time: int = 60) ->
                 json={
                     "model": model,
                     "prompt": "Hello",
-                    "stream": False,
-                    "options": {"max_tokens": 5}
+                    "stream": False
                 },
                 timeout=10
             )
