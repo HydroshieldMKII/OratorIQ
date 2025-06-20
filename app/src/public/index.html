@@ -58,11 +58,12 @@
             const uploadButton = document.getElementById('fileSubmit');
             uploadButton.disabled = true;
 
-	    const started_at =  new Date();
+            const started_at =  new Date();
             const resultStatus = document.getElementById('statusBadge');
+            const resultsDiv = document.getElementById('resultsDiv');
 	    resultStatus.textContent = started_at.toLocaleTimeString();
             resultStatus.textContent += ' Traitement...';
-            resultStatus.classList = 'badge bg-warning';
+            resultStatus.className = 'badge bg-warning';
 
             const formData = new FormData();
             const fileInput = document.querySelector('input[type="file"]');
@@ -103,11 +104,11 @@
                 });
 		const completed_at =  new Date();
 		resultStatus.textContent = `Complété en ${(completed_at - started_at) / 1000 } secondes`;
-                resultStatus.classList = 'badge bg-success';
+                resultStatus.className = 'badge bg-success';
             } catch (error) {
                 console.error(error);
                 resultStatus.textContent = 'Error';
-                resultStatus.classList = 'badge bg-danger';
+                resultStatus.className = 'badge bg-danger';
             }
             uploadButton.disabled = false;
         });
