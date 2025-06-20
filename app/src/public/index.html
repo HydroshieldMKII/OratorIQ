@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>oratorIQ</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -15,11 +16,10 @@
                         <button id="fileSubmit" type="submit" class="btn custom-btn">Upload & Analyze</button>
                     </form>
                 <!-- Results Section -->
-                    <div id="statusBadge" class="badge bg-info">Upload a file to start the process</div>
+                    <div id="statusBadge" class="badge">Upload a file to start the process</div>
                     <h3 class="text-center">Results</h3>
-                    <div id="resultsDiv">...</div>
-		    <!--
-                    <table class="table table-bordered">
+                    <div id="resultsDiv"></div>
+                    <table id="questionsTable" class="table">
                         <thead>
                             <tr>
                                 <th>Question</th>
@@ -28,12 +28,9 @@
                             </tr>
                         </thead>
                         <tbody id="questionsTableBody">
-
                         </tbody>
                     </table>
-		    -->
 
-		    <!--
                 <div class="card p-4">
                     <h2 class="text-center">Ask a Custom Question</h2>
                     <form id="questionForm" class="text-center">
@@ -45,7 +42,6 @@
                     </form>
                     <div id="questionResults" class="text-center mt-3"></div>
                 </div>
-		    -->
             </div>
         </div>
     </div>
@@ -90,8 +86,7 @@
 
                 // Populate the questions table
                 const questionsTableBody = document.getElementById('questionsTableBody');
-                // questionsTableBody.innerHTML = ''; // Clear any existing rows
-
+                questionsTableBody.innerHTML = '';
                 result.questionAnalysis.questions.forEach(question => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -99,7 +94,7 @@
                         <td>${question.sentiment.vote}</td>
                         <td>${question.sentiment.score}</td>
                     `;
-                    // questionsTableBody.appendChild(row);
+                    questionsTableBody.appendChild(row);
                 });
 		const completed_at =  new Date();
 		resultStatus.textContent = `Complété en ${(completed_at - started_at) / 1000 } secondes`;
@@ -113,14 +108,25 @@
         });
 
         // Handle custom question submission
-	    /*
         document.getElementById('questionForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
+            const question = document.getElementById('customQuestion').value;
             const questionResultsDiv = document.getElementById('questionResults');
-            questionResultsDiv.innerHTML = '<h4 style="color: red;">Not implemented yet</h4>';
+
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question })
+                });
+                const result = await response.json();
+                questionResultsDiv.textContent = result.answer;
+            } catch (error) {
+                console.error(error);
+                questionResultsDiv.textContent = 'Error';
+            }
         });
-	   */
     </script>
 </body>
 
