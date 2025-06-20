@@ -11,6 +11,7 @@ Un système sophistiqué de transcription de cours qui convertit les fichiers au
 - **Résumé intelligent** : Analyse de contenu alimentée par l'IA et extraction de points clés
 - **Génération interactive de Q&R** : Questions automatisées basées sur le contenu du cours
 - **Interface moderne** : Interface propre et responsive avec support de thème sombre/clair
+- **Traitement en lot** : Prise en charge de plusieurs fichiers audio pour un traitement simultané
 
 ## Flux de travail de l'application
 
