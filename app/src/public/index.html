@@ -58,8 +58,9 @@
             const uploadButton = document.getElementById('fileSubmit');
             uploadButton.disabled = true;
 
-	    const started_at =  new Date();
+            const started_at =  new Date();
             const resultStatus = document.getElementById('statusBadge');
+            const resultsDiv = document.getElementById('resultsDiv');
 	    resultStatus.textContent = started_at.toLocaleTimeString();
             resultStatus.textContent += ' Traitement...';
             resultStatus.classList = 'badge bg-warning';
