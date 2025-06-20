@@ -3,8 +3,7 @@
 This project provides a proof-of-concept lecture transcription system. It
 contains a FastAPI backend for uploading audio files and a React frontend for
 interacting with the API. Uploaded audio is transcribed and a brief summary with
-sample questions is stored for later review. Summaries and questions are now
-generated using self‑hosted Transformer models for improved quality.
+sample questions is stored for later review.
 
 ## Quick start
 
