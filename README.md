@@ -20,7 +20,7 @@ Welcome to OratorIQ, a powerful application for Speech-to-Text (STT) and Natural
 
 ### Standalone Installer
 
-- **Linux**: Use our standalone installer bash script.
+- **Linux**: Run `./install.sh` to install all dependencies.
 
 ### Vagrant
 
