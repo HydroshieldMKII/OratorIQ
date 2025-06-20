@@ -10,8 +10,9 @@ logger = logging.getLogger(__name__)
 
 # Get Ollama URL from environment
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
+DEFAULT_MODEL = "sadiq‑bd/llama3.2‑1b‑uncensored" #"krith/meta-llama-3.2-1b-instruct-uncensored" #"smollm" #"sadiq-bd/llama3.2-1b-uncensored"
 
-def call_ollama(prompt: str, model: str = "sadiq-bd/llama3.2-1b-uncensored") -> str:
+def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
     """Call the self-hosted Ollama LLM"""
     try:
         response = requests.post(
@@ -22,8 +23,7 @@ def call_ollama(prompt: str, model: str = "sadiq-bd/llama3.2-1b-uncensored") -> 
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "top_p": 0.9,
-                    "max_tokens": 200
+                    "top_p": 0.9
                 }
             },
             timeout=30
@@ -46,7 +46,7 @@ def simple_summary(text: str, sentences: int = 2) -> str:
         return "No summary available"
     
     # Try LLM first
-    prompt = f"""Veuillez fournir un résumé concis du texte suivant en 2-3 phrases. Ne incluez pas d'autres informations, juste le résumé.
+    prompt = f"""Veuillez fournir un résumé concis du texte suivant en #{sentences} phrases. Ne incluez pas d'autres informations, juste le résumé.
 
     Texte: {text[:1000]}
 
@@ -104,7 +104,7 @@ def check_ollama_status() -> bool:
     except:
         return False
 
-def ensure_model_available(model: str = "sadiq-bd/llama3.2-1b-uncensored") -> bool:
+def ensure_model_available(model: str = DEFAULT_MODEL) -> bool:
     """Ensure the specified model is pulled and available"""
     max_retries = 3
     retry_delay = 5
@@ -162,7 +162,7 @@ def ensure_model_available(model: str = "sadiq-bd/llama3.2-1b-uncensored") -> bo
     logger.error(f"Model {model} is not available after {max_retries} attempts")
     return False
 
-def wait_for_model_ready(model: str = "sadiq-bd/llama3.2-1b-uncensored", max_wait_time: int = 60) -> bool:
+def wait_for_model_ready(model: str = DEFAULT_MODEL, max_wait_time: int = 60) -> bool:
     """Wait for model to be ready for inference"""
     logger.info(f"Waiting for model {model} to be ready for inference...")
     start_time = time.time()
