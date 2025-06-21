@@ -15,6 +15,9 @@ DEFAULT_MODEL = "vatistasdim/boXai" #"krith/meta-llama-3.2-1b-instruct-uncensore
 def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
     """Call the self-hosted Ollama LLM"""
     try:
+        # Compute context length based on prompt length
+        context_length = prompt.count('') * 2 + 1000  # 2 tokens per character + 1000 for safety
+
         response = requests.post(
             f"{OLLAMA_URL}/api/generate",
             json={
@@ -23,7 +26,8 @@ def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
                 "stream": False,
                 "options": {
                     "temperature": 0.3,
-                    "top_p": 0.9
+                    "top_p": 0.9,
+                    "num_ctx": context_length
                 }
             },
             timeout=30
@@ -46,9 +50,9 @@ def simple_summary(text: str, sentences: int = 2, model: str = DEFAULT_MODEL) ->
         return "No summary available"
     
     # Try LLM first
-    prompt = f"""Veuillez fournir un résumé concis du texte suivant en #{sentences} phrases. Aucun autre texte n'est nécessaire, juste le résumé.
+    prompt = f"""Veuillez fournir un résumé personnalisé du texte suivant en quelques phrases. Le résumé doit capturer les points clés et les idées principales du texte. Limitez le résumé à {sentences} phrases maximum.
 
-    Texte: {text[:1000]}
+    Texte: {text}
 
     Résumé:"""
     
