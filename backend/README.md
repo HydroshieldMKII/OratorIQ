@@ -1,4 +1,4 @@
-# OratorV2 Backend
+# Orator Backend
 
 This service provides audio upload and transcription endpoints using FastAPI.
 After uploading, files are transcribed using a Whisper-based pipeline. Basic
