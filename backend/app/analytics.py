@@ -10,14 +10,11 @@ logger = logging.getLogger(__name__)
 
 # Get Ollama URL from environment
 OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://localhost:11434')
-DEFAULT_MODEL = "vatistasdim/boXai" #"krith/meta-llama-3.2-1b-instruct-uncensored" #"smollm" #"sadiq-bd/llama3.2-1b-uncensored"
+DEFAULT_MODEL = "vatistasdim/boXai"
 
 def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
     """Call the self-hosted Ollama LLM"""
     try:
-        # Compute context length based on prompt length
-        context_length = prompt.count('') * 2 + 1000  # 2 tokens per character + 1000 for safety
-
         response = requests.post(
             f"{OLLAMA_URL}/api/generate",
             json={
@@ -27,7 +24,7 @@ def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
                 "options": {
                     "temperature": 0.3,
                     "top_p": 0.9,
-                    "num_ctx": context_length
+                    "num_ctx": 2048 # Carefull with vram limit
                 }
             },
             timeout=30
@@ -50,7 +47,7 @@ def simple_summary(text: str, sentences: int = 2, model: str = DEFAULT_MODEL) ->
         return "No summary available"
     
     # Try LLM first
-    prompt = f"""Veuillez fournir un résumé personnalisé du texte suivant en quelques phrases. Le résumé doit capturer les points clés et les idées principales du texte. Limitez le résumé à {sentences} phrases maximum.
+    prompt = f"""Veuillez fournir un résumé personnalisé du texte suivant en quelques phrases. Le résumé doit capturer les points clés et les idées principales du texte. Limitez le résumé à {sentences} phrases maximum. Le résumé doit être en français et ne doit pas inclure d'autres instructions ou commentaires.
 
     Texte: {text}
 
@@ -65,12 +62,12 @@ def simple_summary(text: str, sentences: int = 2, model: str = DEFAULT_MODEL) ->
     return "No summary available"
 
 def generate_questions(text: str, num: int = 3, model: str = DEFAULT_MODEL) -> List[str]:
-    """Generate questions using self-hosted LLM with fallback"""
+    """Generate questions using self-hosted LLM"""
     if not text or text.startswith('['):
         return []
     
     # Try LLM first
-    prompt = f"""Basé sur le texte suivant, générez {num} questions réfléchies qui aideraient quelqu'un à comprendre les concepts clés et les idées discutées. Formatez chaque question sur une nouvelle ligne. Aucun autre texte n'est nécessaire, juste les questions.
+    prompt = f"""Basé sur le texte suivant, générez {num} questions réfléchies qui aideraient quelqu'un à comprendre les concepts clés et les idées discutées. Formatez chaque question sur une nouvelle ligne. Aucun autre texte n'est nécessaire, juste les questions. Les questions doivent être en français et pertinentes par rapport au contenu du texte. Ne pas inclure d'autres instructions ou commentaires.
 
     Texte: {text[:1000]}
 

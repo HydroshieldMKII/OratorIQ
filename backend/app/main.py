@@ -106,7 +106,7 @@ def get_available_models():
             # Always add these default models if not already present
             default_models = [
                 {'name': 'vatistasdim/boXai', 'display_name': 'boXai (Default)', 'size': 0},
-                {'name': 'krith/meta-llama-3.2-1b-instruct-uncensored', 'display_name': 'Llama 3.2 1B', 'size': 0},
+                {'name': 'llama3.2:1b', 'display_name': 'Llama 3.2', 'size': 0},
                 {'name': 'smollm', 'display_name': 'SmolLM', 'size': 0}
             ]
 
@@ -121,7 +121,7 @@ def get_available_models():
             return {
                 "models": [
                     {'name': 'vatistasdim/boXai', 'display_name': 'boXai (Default)', 'size': 0},
-                    {'name': 'krith/meta-llama-3.2-1b-instruct-uncensored', 'display_name': 'Llama 3.2 1B', 'size': 0},
+                    {'name': 'llama3.2:1b', 'display_name': 'Llama 3.2', 'size': 0},
                     {'name': 'smollm', 'display_name': 'SmolLM', 'size': 0}
                 ],
                 "ollama_available": False

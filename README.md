@@ -14,7 +14,7 @@ Un système sophistiqué de transcription de cours qui convertit les fichiers au
 
 ## Avantages
 
-- **Gain de temps** : Convertit rapidement les cours audio en texte et en résumés
+- **Gain de temps** : Convertit rapidement les cours audio en texte et en résumés. Environs 3 minutes pour 1h10min de cours audio avec un GPU Nvidia RTX 4060 mobile
 - **Application légère** : Conçu pour être rapide et efficace, même avec de gros fichiers audio
 - **Hébergement facile** : Déployable en une seule commande via Docker pour une configuration simple, en gardant le contrôle de vos données
 
@@ -52,7 +52,10 @@ Accédez à votre transcription, résumé et questions générées dans un forma
 ## Démarrage rapide
 
 ### Prérequis
-- [Docker](https://docs.docker.com/engine/install/) installés sur votre système
+- Distribution Linux basées sur Debian (Ubuntu, etc.)
+- [Docker installés](https://docs.docker.com/engine/install/) sur votre système
+- Docker compose Version 2.0 ou supérieure
+- GPU Nvidia
 
 ### Configuration
 
@@ -60,6 +63,12 @@ Accédez à votre transcription, résumé et questions générées dans un forma
 ```bash
 git clone https://github.com/HydroshieldMKII/OratorIQ
 cd OratorIQ
+```
+
+2. **Setup pour GPU Nvidia**: 
+```bash
+chmod +x setupNvidiaContainerToolkit.sh
+./setupNvidiaContainerToolkit.sh
 ```
 
 2. **Déployer l'application** :

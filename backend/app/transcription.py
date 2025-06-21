@@ -34,7 +34,7 @@ def extract_audio_duration(path: str) -> float:
     return 0.0
 
 def transcribe_file(path: str, db: Session, audio_id: int) -> str:
-    """Transcribe audio file using Whisper AI with progress updates"""
+    """Transcribe audio file using Whisper AI"""
     try:
         # Update progress - starting transcription
         crud.update_progress(db, audio_id, "transcribing", 25)
@@ -52,15 +52,15 @@ def transcribe_file(path: str, db: Session, audio_id: int) -> str:
         logger.info(f"Starting transcription of {path}")
         import whisper
         
-        # Load model
-        model = whisper.load_model("base")
-        logger.info("Whisper model loaded successfully")
+        # Load model with GPU support
+        model = whisper.load_model("base", device="cuda")
+        logger.info("Whisper model loaded successfully with GPU support")
         
         # Update progress - model loaded
         crud.update_progress(db, audio_id, "transcribing", 50)
         
         # Transcribe
-        result = model.transcribe(path)
+        result = model.transcribe(path, fp16=True)
         text = result.get("text", "").strip()
         
         # Update progress - transcription complete
@@ -127,8 +127,11 @@ def process_audio(db: Session, audio_id: int, path: str, selected_model: str = N
         
         crud.update_progress(db, audio_id, "analyzing", 90)
         
+        # Generate questions
         questions_list = generate_questions(text, model=model_to_use)
         logger.info(f"Generated questions: {questions_list}")
+
+        # Format questions
         questions = '\n'.join([f"{i+1}. {q}" for i, q in enumerate(questions_list)]) if questions_list else "No questions generated"
         
         # Update database with final results

@@ -15,6 +15,7 @@ import {
   Upload,
   FileAudio,
   LoaderPinwheel,
+  Clock,
   CheckCircle,
   MessageSquare,
   FileText,
@@ -371,13 +372,23 @@ export default function App() {
                 f.processing_stage !== "complete" &&
                 f.processing_stage !== "error"
             );
-            const totalFiles = files.length;
-            const completedFiles = files.filter(
+
+            // Only consider files that are not complete for progress
+            const processingFilesOnly = files.filter(
+              (f) => f.processing_stage !== "complete"
+            );
+            const totalFiles = processingFilesOnly.length;
+            const completedFiles = processingFilesOnly.filter(
               (f) => f.processing_stage === "complete"
             ).length;
             const overallProgress =
               totalFiles > 0
-                ? Math.round((completedFiles / totalFiles) * 100)
+                ? Math.round(
+                  processingFiles.reduce(
+                    (sum, f) => sum + (f.progress_percentage || 0),
+                    0
+                  ) / totalFiles
+                )
                 : 0;
 
             const stageGroups = processingFiles.reduce((acc, file) => {
@@ -580,35 +591,6 @@ export default function App() {
                           </div>
                         )}
 
-                      {/* File Metadata */}
-                      <div className="flex items-center space-x-4 text-xs text-black dark:text-white">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (window.confirm(`Are you sure you want to delete and stop processing '${f.filename}'?`)) {
-                              deleteFile(f.id);
-                            }
-                          }}
-                          className="text-red-500 hover:text-red-600 transition-colors"
-                          title="Delete file"
-                          onMouseOver={(e) => {
-                            e.target.style.cursor = "pointer";
-                          }}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                        <div className="flex items-center space-x-1">
-                          <HardDrive className="h-3 w-3" />
-                          <span>{formatFileSize(f.file_size)}</span>
-                        </div>
-                        {f.audio_duration && (
-                          <div className="flex items-center space-x-1">
-                            <LoaderPinwheel className="h-3 w-3" />
-                            <span>{formatDuration(f.audio_duration)}</span>
-                          </div>
-                        )}
-                      </div>
-
                       {/* Model Info for Complete Files */}
                       {f.processing_stage === "complete" &&
                         f.selected_model && (
@@ -617,6 +599,41 @@ export default function App() {
                             <span>{f.selected_model.split("/").pop()}</span>
                           </div>
                         )}
+
+                      {/* File Metadata */}
+                      <div className="flex items-center justify-between text-xs text-black dark:text-white">
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-1">
+                            <HardDrive className="h-3 w-3" />
+                            <span>{formatFileSize(f.file_size)}</span>
+                          </div>
+                          {f.audio_duration && (
+                            <div className="flex items-center space-x-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{formatDuration(f.audio_duration)}</span>
+                            </div>
+                          )}
+                        </div>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (
+                              window.confirm(
+                                `Are you sure you want to delete and stop processing '${f.filename}'?`
+                              )
+                            ) {
+                              deleteFile(f.id);
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-600 transition-colors ml-2"
+                          title="Delete file"
+                          onMouseOver={(e) => {
+                            e.target.style.cursor = "pointer";
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
                     </CardContent>
                   </Card>
                 );
