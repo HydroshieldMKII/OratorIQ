@@ -57,8 +57,6 @@ export default function App() {
       const res = await fetch("http://localhost:8000/files");
       const data = await res.json();
       const currentSelected = selectedRef.current;
-      console.log("Fetched files:", data);
-      console.log("Current selected file:", currentSelected);
       setFiles(data);
 
       // Update selected file if it exists and ensure it's always the latest data
@@ -67,8 +65,6 @@ export default function App() {
         if (updatedSelected) {
           setSelected(updatedSelected);
         }
-      } else {
-        console.log("No selected file to update");
       }
 
       // Check if there are any files still processing OR if selected file is still processing
@@ -193,7 +189,6 @@ export default function App() {
   // Keep selectedRef in sync with selected state
   useEffect(() => {
     selectedRef.current = selected;
-    console.log("Selected state changed to:", selected);
   }, [selected]);
 
   // Start polling when a processing file is selected
@@ -541,12 +536,6 @@ export default function App() {
                         : ""
                     )}
                     onClick={() => {
-                      console.log("File card clicked:", f);
-                      console.log("Current selected:", selected);
-                      console.log(
-                        "Will set selected to:",
-                        selected?.id === f.id ? null : f
-                      );
                       setSelected(selected?.id === f.id ? null : f);
                     }}
                   >
