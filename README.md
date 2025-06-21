@@ -1,97 +1,48 @@
 # OratorIQ
 
-Un système sophistiqué de transcription de cours qui convertit les fichiers audio en contenu structuré avec des résumés automatisés et des questions générées automatiquement. Construit avec un backend FastAPI et un frontend React pour un traitement audio et une génération de contenu fluides.
+OratorIQ est un outil de transcription de cours transformant un enregistrement audio en texte structuré, résumés et questions générées automatiquement. Le projet repose sur un backend FastAPI et un frontend React pour un traitement fluide.
 
 ![Aperçu de l'application](assets/menu.png)
 
-## Fonctionnalités
+## Fonctionnalités clés
 
-- **Téléchargement et traitement audio** : Interface glisser-déposer pour faciliter le téléchargement de fichiers audio
-- **Résumé intelligent** : Analyse de contenu alimentée par l'IA et extraction de points clés
-- **Génération interactive de Q&R** : Questions automatisées basées sur le contenu du cours
-- **Interface moderne** : Interface propre et responsive avec support de thème sombre/clair
-- **Traitement en lot** : Prise en charge de plusieurs fichiers audio pour un traitement simultané
+- **Téléversement simple** : glisser-déposer d'un ou plusieurs fichiers audio.
+- **Transcription et résumé** : extraction automatisée des points essentiels via l'IA.
+- **Génération de Q&R** : création de questions à partir du contenu analysé.
+- **Interface moderne** : application responsive avec mode sombre ou clair.
 
 ## Avantages
 
-- **Gain de temps** : Convertit rapidement les cours audio en texte et en résumés. Environs 3 minutes pour 1h10min de cours audio avec un GPU Nvidia RTX 4060 mobile
-- **Application légère** : Conçu pour être rapide et efficace, même avec de gros fichiers audio
-- **Hébergement facile** : Déployable en une seule commande via Docker pour une configuration simple, en gardant le contrôle de vos données
+- **Gain de temps** : environ 3 minutes pour transcrire 1h10 d'audio avec un GPU Nvidia RTX 4060 mobile.
+- **Application légère** : adaptée aux fichiers volumineux.
+- **Déploiement Docker** : mise en service en quelques commandes tout en gardant vos données localement.
 
-## Détails techniques
+## Prérequis
 
-- **Stockage** : Le projet entier et le modèle de base utilise environs 15 Go d'espace disque
-- **Mémoire RAM** : Le projet entier et le modèle de base utilise environs 6 Go de RAM
-
-## Flux de travail de l'application
-
-### 1. Téléchargez votre audio
-Commencez par télécharger votre fichier audio de cours via l'interface.
-
-![Interface principale](assets/menu.png)
-
-### 2. Traitement en cours
-Suivez la progression en temps réel pendant que votre audio est transcrit et analysé.
-
-![Traitement](assets/process1.png)
-
-![Traitement](assets/process2.png)
-
-![Traitement](assets/process3.png)
-
-### 3. Traitement terminé
-Recevez une notification lorsque votre cours a été entièrement traité et analysé.
-
-![Traitement terminé](assets/done.png)
-
-### 4. Voir les résultats
-Accédez à votre transcription, résumé et questions générées dans un format propre et organisé.
-
-![Tableau de bord des résultats](assets/result.png)
-
-### 5. Question personnalisée
-Posez des questions personnalisées sur le contenu traité pour obtenir des réponses précises.
-
-![Question personnalisée](assets/question.png)
+- Distribution Linux basée sur Debian.
+- [Docker Engine](https://docs.docker.com/engine/install/) et Docker Compose v2 ou supérieur.
+- GPU Nvidia.
 
 ## Démarrage rapide
 
-### Prérequis
-- Distribution Linux basées sur Debian (Ubuntu, etc.)
-- [Docker installés](https://docs.docker.com/engine/install/) sur votre système
-- Docker compose Version 2.0 ou supérieure
-- GPU Nvidia
-
-### Configuration
-
-1. **Cloner le dépôt** :
 ```bash
 git clone https://github.com/HydroshieldMKII/OratorIQ
 cd OratorIQ
-```
-
-2. **Setup pour GPU Nvidia**: 
-```bash
-chmod +x setupNvidiaContainerToolkit.sh
+chmod +x setupNvidiaContainerToolkit.sh  # configuration du GPU
 ./setupNvidiaContainerToolkit.sh
-```
-
-2. **Déployer l'application** :
-```bash
 docker compose up --build
 ```
 
-3. **Accéder à l'application** :
-    - Ouvrez `http://localhost:3000` pour accéder à l'interface utilisateur
+Ouvrez ensuite `http://localhost:3000` pour accéder à l'interface.
 
-## Stack technologique
+## Stack technique
 
 - **Backend** : FastAPI, Python, SQLAlchemy
 - **Frontend** : React, Vite, Tailwind CSS
-- **Traitement audio** : Openai-whisper pour les APIs de speach-to-text
-- **Intégration IA** : Ollama pour la résumé de contenu et la génération de questions
+- **Traitement audio** : OpenAI Whisper
+- **Génération de contenu** : Ollama
 - **Base de données** : SQLite
-- **Déploiement** : Docker, Docker Compose
+- **Containerisation** : Docker, Docker Compose
 
 ## Licence
 
