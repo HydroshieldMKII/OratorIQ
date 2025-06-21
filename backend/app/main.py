@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, crud
 from .transcription import process_audio
+from .analytics import answer_question
 from .database import engine, SessionLocal
 from .analytics import check_ollama_status
 import shutil
@@ -159,6 +160,17 @@ def get_status():
         "llm_available": check_ollama_status(),
         "ollama_url": os.getenv('OLLAMA_URL', 'http://localhost:11434')
     }
+
+@app.post("/files/{audio_id}/ask")
+def ask_question(audio_id: int, question: str = Form(...), db: Session = Depends(get_db)):
+    """
+    Answer a question about the transcribed text for a given audio file.
+    """
+    audio = crud.get_audio_file(db, audio_id)
+    if not audio or not audio.transcription:
+        raise HTTPException(status_code=404, detail="Transcription not found")
+    answer = answer_question(audio.transcription, question)
+    return {"answer": answer}
 
 @app.delete("/files/{audio_id}")
 def delete_file(audio_id: int, db: Session = Depends(get_db)):

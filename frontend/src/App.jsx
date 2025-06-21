@@ -29,6 +29,65 @@ import {
 import { cn, truncateText } from "./lib/utils";
 import { Trash2 } from "lucide-react";
 
+function AskQuestionSection({ audioId }) {
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleAsk = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setAnswer("");
+    try {
+      const form = new FormData();
+      form.append("question", question);
+      const res = await fetch(`http://localhost:8000/files/${audioId}/ask`, {
+        method: "POST",
+        body: form,
+      });
+      if (!res.ok) {
+        throw new Error("Failed to get answer");
+      }
+      const data = await res.json();
+      setAnswer(data.answer);
+    } catch (err) {
+      setError("Could not get answer. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2 mt-6">
+      <form onSubmit={handleAsk} className="flex flex-col md:flex-row items-stretch gap-2">
+        <Input
+          type="text"
+          placeholder="Ask a question about the audio"
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          disabled={loading}
+          required
+          className="flex-1"
+        />
+        <Button type="submit" disabled={loading || !question.trim()}>
+          {loading ? "Searching…" : "Ask"}
+        </Button>
+      </form>
+      {answer && (
+        <div className="bg-background/70 border border-border rounded-lg p-4 mt-2">
+          <span className="font-semibold text-primary">Answer : </span>
+          <span>{answer}</span>
+        </div>
+      )}
+      {error && (
+        <div className="text-red-500 text-sm mt-2">{error}</div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [file, setFile] = useState(null);
   const [files, setFiles] = useState([]);
@@ -672,6 +731,9 @@ export default function App() {
                       <span>Word count: {selected.word_count || 0} words</span>
                     </div>
                   </div>
+
+                  {/* Ask a Question */}
+                  <AskQuestionSection audioId={selected.id} />
 
                   {/* Summary */}
                   <div className="space-y-3">

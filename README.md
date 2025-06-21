@@ -49,6 +49,11 @@ Accédez à votre transcription, résumé et questions générées dans un forma
 
 ![Tableau de bord des résultats](assets/result.png)
 
+### 5. Question personnalisée
+Posez des questions personnalisées sur le contenu traité pour obtenir des réponses précises.
+
+![Question personnalisée](assets/question.png)
+
 ## Démarrage rapide
 
 ### Prérequis

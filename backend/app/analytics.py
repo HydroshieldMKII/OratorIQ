@@ -163,6 +163,21 @@ def ensure_model_available(model: str = DEFAULT_MODEL) -> bool:
     logger.error(f"Model {model} is not available after {max_retries} attempts")
     return False
 
+def answer_question(text: str, question: str, model: str = DEFAULT_MODEL) -> str:
+    """Answer a question based on the provided text using the self-hosted LLM"""
+    if not text or text.startswith('[') or not question:
+        return "Aucune réponse disponible."
+    prompt = f"""Vous êtes un assistant IA. Utilisez le texte ci-dessous pour répondre à la question de l'utilisateur. Si la réponse n'est pas dans le texte, dites-le explicitement. Répondez en français.
+
+    Texte: {text}
+
+    Question: {question}
+
+    Réponse:"""
+    
+    answer = call_ollama(prompt, model)
+    return answer if answer else "Aucune réponse disponible."
+
 def wait_for_model_ready(model: str = DEFAULT_MODEL, max_wait_time: int = 60) -> bool:
     """Wait for model to be ready for inference"""
     logger.info(f"Waiting for model {model} to be ready for inference...")
@@ -192,7 +207,7 @@ def wait_for_model_ready(model: str = DEFAULT_MODEL, max_wait_time: int = 60) ->
                 logger.warning(f"Model test failed with status {test_response.status_code}")
                 
         except Exception as e:
-            logger.warning(f"Model readiness test failed: {e}. This is expected if the model is still loading.")
+            logger.warning(f"Model readiness test failed: {e}. This is expected if the model is still loading or downloading.")
         
         finally:
             # Wait before the next check
