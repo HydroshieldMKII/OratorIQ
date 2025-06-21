@@ -44,6 +44,21 @@ export default function App() {
       console.log("Fetched files:", data);
       setFiles(data);
 
+      // Update selected file if it exists and ensure it's always the latest data
+      if (selected) {
+        const updatedSelected = data.find((d) => d.id === selected.id);
+        if (updatedSelected) {
+          // Force update selected state with fresh data
+          console.log(
+            "Updating selected file from:",
+            selected,
+            "to:",
+            updatedSelected
+          );
+          setSelected(updatedSelected);
+        }
+      }
+
       // Check if there are any files still processing OR if selected file is still processing
       const hasProcessingFiles = data.some(
         (f) =>
@@ -419,19 +434,14 @@ export default function App() {
                   <Card
                     key={f.id}
                     className={cn(
-                      "transition-all duration-300 hover:scale-[1.02] shadow-lg animate-slide-up",
-                      f.processing_stage === "complete"
-                        ? "cursor-pointer"
-                        : "cursor-default",
+                      "cursor-pointer transition-all duration-300 hover:scale-[1.02] shadow-lg animate-slide-up",
                       selected?.id === f.id
                         ? "bg-gray-50 dark:bg-gray-800 ring-2 ring-primary shadow-lg"
                         : ""
                     )}
-                    onClick={() => {
-                      if (f.processing_stage === "complete") {
-                        setSelected(selected?.id === f.id ? null : f);
-                      }
-                    }}
+                    onClick={() =>
+                      setSelected(selected?.id === f.id ? null : f)
+                    }
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
@@ -527,7 +537,7 @@ export default function App() {
                         {selected.transcription}
                       </p>
                     </div>
-                    <div className="flex items-center text-sm text-gray-500">
+                    <div className="flex items-center text-sm text-muted-foreground">
                       <span>Word count: {selected.word_count || 0} words</span>
                     </div>
                   </div>
@@ -579,7 +589,80 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-              ) : null}
+              ) : (
+                <div className="text-center py-12">
+                  {selected.processing_stage === "error" ? (
+                    <>
+                      <AlertCircle className="h-16 w-16 mx-auto text-red-500 mb-4" />
+                      <h3 className="text-lg font-medium mb-2 text-red-600">
+                        Processing Failed
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        An error occurred while processing this file
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <div className="relative mb-4">
+                        {selected.processing_stage === "downloading_model" && (
+                          <Download className="h-16 w-16 mx-auto text-blue-500 animate-pulse" />
+                        )}
+                        {selected.processing_stage === "transcribing" && (
+                          <FileAudio className="h-16 w-16 mx-auto text-green-500 animate-pulse" />
+                        )}
+                        {selected.processing_stage === "analyzing" && (
+                          <BarChart3 className="h-16 w-16 mx-auto text-purple-500 animate-pulse" />
+                        )}
+                        {![
+                          "downloading_model",
+                          "transcribing",
+                          "analyzing",
+                        ].includes(selected.processing_stage) && (
+                          <Clock className="h-16 w-16 mx-auto text-muted-foreground animate-spin" />
+                        )}
+                      </div>
+                      <h3 className="text-lg font-medium mb-2">
+                        {selected.processing_stage === "downloading_model" &&
+                          "Downloading AI Model"}
+                        {selected.processing_stage === "transcribing" &&
+                          "Transcribing Audio"}
+                        {selected.processing_stage === "analyzing" &&
+                          "Generating Analysis"}
+                        {![
+                          "downloading_model",
+                          "transcribing",
+                          "analyzing",
+                        ].includes(selected.processing_stage) &&
+                          "Processing Audio File"}
+                      </h3>
+                      <p className="text-muted-foreground mb-4">
+                        {selected.processing_stage === "downloading_model" &&
+                          "Preparing the AI model for analysis..."}
+                        {selected.processing_stage === "transcribing" &&
+                          "Converting speech to text..."}
+                        {selected.processing_stage === "analyzing" &&
+                          "Generating summary and questions..."}
+                        {![
+                          "downloading_model",
+                          "transcribing",
+                          "analyzing",
+                        ].includes(selected.processing_stage) &&
+                          "This may take a few moments depending on file size"}
+                      </p>
+                      <div className="max-w-xs mx-auto space-y-2">
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
+                          <span>Progress</span>
+                          <span>{selected.progress_percentage || 0}%</span>
+                        </div>
+                        <Progress
+                          value={selected.progress_percentage || 0}
+                          className="h-2"
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
