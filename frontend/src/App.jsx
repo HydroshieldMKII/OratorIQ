@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "./components/ui/button";
 import {
   Card,
@@ -36,27 +36,25 @@ export default function App() {
   const [selectedModel, setSelectedModel] = useState("");
   const pollIntervalRef = useRef(null);
   const fileInputRef = useRef(null);
+  const selectedRef = useRef(null);
 
-  const fetchFiles = async () => {
+  const fetchFiles = useCallback(async () => {
     try {
       const res = await fetch("http://localhost:8000/files");
       const data = await res.json();
+      const currentSelected = selectedRef.current;
       console.log("Fetched files:", data);
+      console.log("Current selected file:", currentSelected);
       setFiles(data);
 
       // Update selected file if it exists and ensure it's always the latest data
-      if (selected) {
-        const updatedSelected = data.find((d) => d.id === selected.id);
+      if (currentSelected) {
+        const updatedSelected = data.find((d) => d.id === currentSelected.id);
         if (updatedSelected) {
-          // Force update selected state with fresh data
-          console.log(
-            "Updating selected file from:",
-            selected,
-            "to:",
-            updatedSelected
-          );
           setSelected(updatedSelected);
         }
+      } else {
+        console.log("No selected file to update");
       }
 
       // Check if there are any files still processing OR if selected file is still processing
@@ -65,10 +63,10 @@ export default function App() {
           f.processing_stage !== "complete" && f.processing_stage !== "error"
       );
       const selectedFileProcessing =
-        selected &&
+        currentSelected &&
         data.find(
           (f) =>
-            f.id === selected.id &&
+            f.id === currentSelected.id &&
             f.processing_stage !== "complete" &&
             f.processing_stage !== "error"
         );
@@ -88,7 +86,7 @@ export default function App() {
     } catch (error) {
       console.error("Error fetching files:", error);
     }
-  };
+  }, []);
 
   const fetchModels = async () => {
     try {
@@ -108,10 +106,10 @@ export default function App() {
     }
   };
 
-  const startPolling = () => {
+  const startPolling = useCallback(() => {
     if (pollIntervalRef.current) return;
     pollIntervalRef.current = setInterval(fetchFiles, 2000);
-  };
+  }, [fetchFiles]);
 
   const stopPolling = () => {
     if (pollIntervalRef.current) {
@@ -177,6 +175,12 @@ export default function App() {
       stopPolling();
     };
   }, []);
+
+  // Keep selectedRef in sync with selected state
+  useEffect(() => {
+    selectedRef.current = selected;
+    console.log("Selected state changed to:", selected);
+  }, [selected]);
 
   // Start polling when a processing file is selected
   useEffect(() => {
@@ -267,7 +271,7 @@ export default function App() {
                 "border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300",
                 dragActive
                   ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/50",
+                  : "border-border hover:border-primary/50 hover:bg-muted/50",
                 "cursor-pointer"
               )}
               onDragEnter={handleDrag}
@@ -299,8 +303,10 @@ export default function App() {
                       e.stopPropagation();
                       handleUpload();
                     }}
+                    onMouseEnter={(e) => e.stopPropagation()}
+                    onMouseLeave={(e) => e.stopPropagation()}
                     disabled={isProcessing}
-                    className="min-w-32 cursor-pointer hover:cursor-pointer border-2 border-primary bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                    className="min-w-32 cursor-pointer hover:cursor-pointer border-2 border-primary bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors shadow-md hover:shadow-lg relative z-10"
                   >
                     {isProcessing ? (
                       <>
@@ -333,24 +339,92 @@ export default function App() {
         </Card>
 
         {/* Processing Status */}
-        {pollIntervalRef.current && (
-          <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/50 animate-slide-up">
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-3">
-                <Clock className="h-5 w-5 text-blue-600 animate-spin" />
-                <div className="flex-1">
-                  <p className="font-medium text-blue-900 dark:text-blue-100">
-                    Processing files in background...
-                  </p>
-                  <p className="text-sm text-blue-700 dark:text-blue-300">
-                    Analytics will appear automatically when ready
-                  </p>
-                </div>
-              </div>
-              <Progress value={60} className="mt-3 h-2" />
-            </CardContent>
-          </Card>
-        )}
+        {pollIntervalRef.current &&
+          (() => {
+            const processingFiles = files.filter(
+              (f) =>
+                f.processing_stage !== "complete" &&
+                f.processing_stage !== "error"
+            );
+            const totalFiles = files.length;
+            const completedFiles = files.filter(
+              (f) => f.processing_stage === "complete"
+            ).length;
+            const overallProgress =
+              totalFiles > 0
+                ? Math.round((completedFiles / totalFiles) * 100)
+                : 0;
+
+            const stageGroups = processingFiles.reduce((acc, file) => {
+              acc[file.processing_stage] =
+                (acc[file.processing_stage] || 0) + 1;
+              return acc;
+            }, {});
+
+            const getStatusMessage = () => {
+              if (processingFiles.length === 1) {
+                const file = processingFiles[0];
+                const stageText =
+                  {
+                    downloading_model: "Downloading AI model",
+                    transcribing: "Transcribing audio",
+                    analyzing: "Analyzing content",
+                  }[file.processing_stage] || "Processing";
+                return `${stageText} for ${file.filename}`;
+              } else if (processingFiles.length > 1) {
+                return `Processing ${processingFiles.length} files in background`;
+              }
+              return "Processing files in background...";
+            };
+
+            const getDetailMessage = () => {
+              const stages = Object.entries(stageGroups).map(
+                ([stage, count]) => {
+                  const stageText =
+                    {
+                      downloading_model: "downloading model",
+                      transcribing: "transcribing",
+                      analyzing: "analyzing",
+                    }[stage] || "processing";
+                  return `${count} ${stageText}`;
+                }
+              );
+
+              if (stages.length > 0) {
+                return `Currently: ${stages.join(
+                  ", "
+                )}. You can leave and come back later to check status.`;
+              }
+              return "Your files are being processed. You can continue to upload more files or check the status of existing ones.";
+            };
+
+            return (
+              <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/50 animate-slide-up">
+                <CardContent className="pt-6">
+                  <div className="flex items-center space-x-3">
+                    <Clock className="h-5 w-5 text-blue-600 animate-spin" />
+                    <div className="flex-1">
+                      <p className="font-medium text-blue-900 dark:text-blue-100">
+                        {getStatusMessage()}
+                      </p>
+                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                        {getDetailMessage()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 space-y-2">
+                    <div className="flex items-center justify-between text-xs text-blue-700 dark:text-blue-300">
+                      <span>Overall Progress</span>
+                      <span>
+                        {completedFiles}/{totalFiles} files completed
+                      </span>
+                    </div>
+                    <Progress value={overallProgress} className="h-2" />
+                  </div>
+                </CardContent>
+              </Card>
+            );
+          })()}
 
         {/* Files Grid */}
         <div className="space-y-6">
@@ -439,9 +513,15 @@ export default function App() {
                         ? "bg-gray-50 dark:bg-gray-800 ring-2 ring-primary shadow-lg"
                         : ""
                     )}
-                    onClick={() =>
-                      setSelected(selected?.id === f.id ? null : f)
-                    }
+                    onClick={() => {
+                      console.log("File card clicked:", f);
+                      console.log("Current selected:", selected);
+                      console.log(
+                        "Will set selected to:",
+                        selected?.id === f.id ? null : f
+                      );
+                      setSelected(selected?.id === f.id ? null : f);
+                    }}
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
