@@ -33,9 +33,11 @@ Commencez par télécharger votre fichier audio de cours via l'interface.
 ### 2. Traitement en cours
 Suivez la progression en temps réel pendant que votre audio est transcrit et analysé.
 
-![Vue de traitement](assets/process.png)
+![Traitement](assets/process1.png)
 
-![Vue de traitement étendue](assets/process_expended.png)
+![Traitement](assets/process2.png)
+
+![Traitement](assets/process3.png)
 
 ### 3. Traitement terminé
 Recevez une notification lorsque votre cours a été entièrement traité et analysé.

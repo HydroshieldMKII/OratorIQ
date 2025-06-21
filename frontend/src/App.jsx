@@ -129,7 +129,10 @@ export default function App() {
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      console.warn("No file selected for upload");
+      return;
+    }
     setIsProcessing(true);
     try {
       const form = new FormData();
@@ -306,7 +309,6 @@ export default function App() {
                       onClick={(e) => {
                         e.stopPropagation();
                         setFile(null);
-                        fileInputRef.current.value = null; // Reset file input
                       }}
                       className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-md hover:shadow-lg cursor-pointer"
                       title="Remove file"
@@ -324,6 +326,7 @@ export default function App() {
                     onClick={(e) => {
                       e.stopPropagation();
                       handleUpload();
+                      fileInputRef.current.value = ""; // Reset file input
                     }}
                     onMouseEnter={(e) => e.stopPropagation()}
                     onMouseLeave={(e) => e.stopPropagation()}

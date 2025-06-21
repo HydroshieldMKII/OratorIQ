@@ -90,24 +90,30 @@ def get_available_models():
         if response.status_code == 200:
             data = response.json()
             models = []
-            for model in data.get('models', []):
-                model_name = model.get('name', '')
-                if model_name:
-                    # Clean up model name for display
-                    display_name = model_name.split(':')[0]
-                    models.append({
-                        'name': model_name,
-                        'display_name': display_name,
-                        'size': model.get('size', 0)
-                    })
+
+            # Fetch models from local Ollama API
+            # for model in data.get('models', []):
+            #     model_name = model.get('name', '')
+            #     if model_name:
+            #         # Clean up model name for display
+            #         display_name = model_name.split(':')[0]
+            #         models.append({
+            #             'name': model_name,
+            #             'display_name': display_name,
+            #             'size': model.get('size', 0)
+            #         })
             
-            # Add default models if none found
-            if not models:
-                models = [
-                    {'name': 'vatistasdim/boXai', 'display_name': 'boXai (Default)', 'size': 0},
-                    {'name': 'krith/meta-llama-3.2-1b-instruct-uncensored', 'display_name': 'Llama 3.2 1B', 'size': 0},
-                    {'name': 'smollm', 'display_name': 'SmolLM', 'size': 0}
-                ]
+            # Always add these default models if not already present
+            default_models = [
+                {'name': 'vatistasdim/boXai', 'display_name': 'boXai (Default)', 'size': 0},
+                {'name': 'krith/meta-llama-3.2-1b-instruct-uncensored', 'display_name': 'Llama 3.2 1B', 'size': 0},
+                {'name': 'smollm', 'display_name': 'SmolLM', 'size': 0}
+            ]
+
+            existing_names = {m['name'] for m in models}
+            for default_model in default_models:
+                if default_model['name'] not in existing_names:
+                    models.append(default_model)
             
             return {"models": models, "ollama_available": True}
         else:
