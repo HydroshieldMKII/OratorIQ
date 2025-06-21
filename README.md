@@ -18,6 +18,11 @@ Un système sophistiqué de transcription de cours qui convertit les fichiers au
 - **Application légère** : Conçu pour être rapide et efficace, même avec de gros fichiers audio
 - **Hébergement facile** : Déployable en une seule commande via Docker pour une configuration simple, en gardant le contrôle de vos données
 
+## Détails techniques
+
+- **Stockage** : Le projet entier et le modèle de base utilise environs 15 Go d'espace disque
+- **Mémoire RAM** : Le projet entier et le modèle de base utilise environs 6 Go de RAM
+
 ## Flux de travail de l'application
 
 ### 1. Téléchargez votre audio
