@@ -156,3 +156,12 @@ def process_audio(db: Session, audio_id: int, path: str, selected_model: str = N
         
         # Update to error state
         crud.update_error_state(db, audio_id, str(e))
+
+    finally:
+        #delete the audio file if it exists
+        if os.path.exists(path):
+            try:
+                os.remove(path)
+                logger.info(f"Deleted audio file {path}")
+            except Exception as e:
+                logger.error(f"Failed to delete audio file {path}: {str(e)}")

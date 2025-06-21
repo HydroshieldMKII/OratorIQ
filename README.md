@@ -83,7 +83,7 @@ docker compose up --build
 
 - **Backend** : FastAPI, Python, SQLAlchemy
 - **Frontend** : React, Vite, Tailwind CSS
-- **Traitement audio** : Openai-whisper pour les APIs de parole en texte
+- **Traitement audio** : Openai-whisper pour les APIs de speach-to-text
 - **Intégration IA** : Ollama pour la résumé de contenu et la génération de questions
 - **Base de données** : SQLite
 - **Déploiement** : Docker, Docker Compose
