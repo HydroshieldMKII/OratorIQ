@@ -78,3 +78,20 @@ def update_error_state(db: Session, audio_id: int, error_message: str):
         db.commit()
         db.refresh(obj)
     return obj
+
+def stop_ollama_process(audio_id: int):
+    """Placeholder function to stop Ollama process for a specific file"""
+    # Logic to stop Ollama process
+    pass
+
+def stop_whisper_process(audio_id: int):
+    """Placeholder function to stop Whisper process for a specific file"""
+    # Logic to stop Whisper process
+    pass
+
+def delete_audio_file(db: Session, audio_id: int):
+    """Delete audio file record from the database"""
+    obj = get_audio_file(db, audio_id)
+    if obj:
+        db.delete(obj)
+        db.commit()

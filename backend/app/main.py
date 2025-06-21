@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Depends, BackgroundTasks, Form
+from fastapi import FastAPI, UploadFile, File, Depends, BackgroundTasks, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from . import models, schemas, crud
@@ -77,7 +77,6 @@ def list_files(db: Session = Depends(get_db)):
 def get_file(audio_id: int, db: Session = Depends(get_db)):
     audio = crud.get_audio_file(db, audio_id)
     if not audio:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="File not found")
     return audio
 
@@ -135,7 +134,6 @@ def get_file_progress(audio_id: int, db: Session = Depends(get_db)):
     """Get processing progress for a specific file"""
     audio = crud.get_audio_file(db, audio_id)
     if not audio:
-        from fastapi import HTTPException
         raise HTTPException(status_code=404, detail="File not found")
     
     return {
@@ -155,3 +153,24 @@ def get_status():
         "llm_available": check_ollama_status(),
         "ollama_url": os.getenv('OLLAMA_URL', 'http://localhost:11434')
     }
+
+@app.delete("/files/{audio_id}")
+def delete_file(audio_id: int, db: Session = Depends(get_db)):
+    """Delete a file and its associated data"""
+    audio = crud.get_audio_file(db, audio_id)
+    if not audio:
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Stop Ollama and Whisper processes if applicable
+    crud.stop_ollama_process(audio_id)
+    crud.stop_whisper_process(audio_id)
+    
+    # Delete the file from the uploads directory
+    file_path = os.path.join(UPLOAD_DIR, audio.filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+    
+    # Remove the file record from the database
+    crud.delete_audio_file(db, audio_id)
+    
+    return {"message": "File deleted successfully"}

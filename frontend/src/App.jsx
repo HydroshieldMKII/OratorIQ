@@ -26,6 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { cn, truncateText } from "./lib/utils";
+import { Trash2 } from "lucide-react";
 
 export default function App() {
   const [file, setFile] = useState(null);
@@ -38,6 +39,18 @@ export default function App() {
   const pollIntervalRef = useRef(null);
   const fileInputRef = useRef(null);
   const selectedRef = useRef(null);
+
+  const deleteFile = async (fileId) => {
+    try {
+      await fetch(`http://localhost:8000/files/${fileId}`, {
+        method: "DELETE",
+      });
+      setSelected(null);
+      await fetchFiles();
+    } catch (error) {
+      console.error("Error deleting file:", error);
+    }
+  };
 
   const fetchFiles = useCallback(async () => {
     try {
@@ -547,8 +560,8 @@ export default function App() {
                             f.processing_stage === "complete"
                               ? "success"
                               : f.processing_stage === "error"
-                              ? "destructive"
-                              : "processing"
+                                ? "destructive"
+                                : "processing"
                           }
                           className="shrink-0"
                         >
@@ -577,6 +590,21 @@ export default function App() {
 
                       {/* File Metadata */}
                       <div className="flex items-center space-x-4 text-xs text-black dark:text-white">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (window.confirm(`Are you sure you want to delete and stop processing '${f.filename}'?`)) {
+                              deleteFile(f.id);
+                            }
+                          }}
+                          className="text-red-500 hover:text-red-600 transition-colors"
+                          title="Delete file"
+                          onMouseOver={(e) => {
+                            e.target.style.cursor = "pointer";
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
                         <div className="flex items-center space-x-1">
                           <HardDrive className="h-3 w-3" />
                           <span>{formatFileSize(f.file_size)}</span>
@@ -712,8 +740,8 @@ export default function App() {
                           "transcribing",
                           "analyzing",
                         ].includes(selected.processing_stage) && (
-                          <LoaderPinwheel className="h-16 w-16 mx-auto text-muted-foreground animate-spin" />
-                        )}
+                            <LoaderPinwheel className="h-16 w-16 mx-auto text-muted-foreground animate-spin" />
+                          )}
                       </div>
                       <h3 className="text-lg font-medium mb-2">
                         {selected.processing_stage === "downloading_model" &&
