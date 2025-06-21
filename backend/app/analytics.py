@@ -41,7 +41,7 @@ def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
         return ""
 
 def simple_summary(text: str, sentences: int = 2, model: str = DEFAULT_MODEL) -> str:
-    """Generate a summary using self-hosted LLM with fallback"""
+    """Generate a summary using self-hosted LLM"""
     if not text or text.startswith('['):
         return "No summary available"
     
@@ -191,9 +191,12 @@ def wait_for_model_ready(model: str = DEFAULT_MODEL, max_wait_time: int = 60) ->
                 logger.warning(f"Model test failed with status {test_response.status_code}")
                 
         except Exception as e:
-            logger.warning(f"Model readiness test failed: {e}")
+            logger.warning(f"Model readiness test failed: {e}. This is expected if the model is still loading.")
         
-        time.sleep(2)
+        finally:
+            # Wait before the next check
+            logger.info(f"Waiting 2 seconds before checking model {model} readiness again...")
+            time.sleep(2)
     
-    logger.error(f"Model {model} not ready after {max_wait_time} seconds")
+    logger.error(f"Model {model} was not ready after {max_wait_time} seconds. Aborting")
     return False

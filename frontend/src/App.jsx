@@ -14,7 +14,7 @@ import { ThemeToggle } from "./components/theme-toggle";
 import {
   Upload,
   FileAudio,
-  Clock,
+  LoaderPinwheel,
   CheckCircle,
   MessageSquare,
   FileText,
@@ -23,6 +23,7 @@ import {
   Cpu,
   AlertCircle,
   HardDrive,
+  X,
 } from "lucide-react";
 import { cn, truncateText } from "./lib/utils";
 
@@ -207,7 +208,7 @@ export default function App() {
             <div>
               <h1 className="text-2xl font-bold gradient-text">OratorIQ</h1>
               <p className="text-sm text-muted-foreground">
-                AI-Powered Audio Analysis
+                Your teacher assistant for audio analysis
               </p>
             </div>
           </div>
@@ -269,16 +270,16 @@ export default function App() {
             <div
               className={cn(
                 "border-2 border-dashed rounded-lg p-8 text-center transition-all duration-300",
-                dragActive
-                  ? "border-primary bg-primary/5"
-                  : "border-border hover:border-primary/50 hover:bg-muted/50",
-                "cursor-pointer"
+                dragActive ? "border-primary bg-primary/5" : "border-border",
+                file
+                  ? ""
+                  : "cursor-pointer hover:border-primary/50 hover:bg-muted/50"
               )}
               onDragEnter={handleDrag}
               onDragLeave={handleDrag}
               onDragOver={handleDrag}
               onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => !file && fileInputRef.current?.click()}
             >
               <input
                 ref={fileInputRef}
@@ -291,7 +292,20 @@ export default function App() {
 
               {file ? (
                 <div className="space-y-4">
-                  <FileAudio className="h-12 w-12 mx-auto text-primary" />
+                  <div className="relative">
+                    <FileAudio className="h-12 w-12 mx-auto text-primary" />
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setFile(null);
+                        fileInputRef.current.value = null; // Reset file input
+                      }}
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-md hover:shadow-lg cursor-pointer"
+                      title="Remove file"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
                   <div>
                     <p className="font-medium">{file.name}</p>
                     <p className="text-sm text-muted-foreground">
@@ -310,7 +324,7 @@ export default function App() {
                   >
                     {isProcessing ? (
                       <>
-                        <Clock className="h-4 w-4 mr-2 animate-spin" />
+                        <LoaderPinwheel className="h-4 w-4 mr-2 animate-spin" />
                         Uploading...
                       </>
                     ) : (
@@ -402,7 +416,7 @@ export default function App() {
               <Card className="border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/50 animate-slide-up">
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-3">
-                    <Clock className="h-5 w-5 text-blue-600 animate-spin" />
+                    <LoaderPinwheel className="h-5 w-5 text-blue-600 animate-spin" />
                     <div className="flex-1">
                       <p className="font-medium text-blue-900 dark:text-blue-100">
                         {getStatusMessage()}
@@ -468,7 +482,7 @@ export default function App() {
                     case "error":
                       return <AlertCircle className="h-3 w-3" />;
                     default:
-                      return <Clock className="h-3 w-3" />;
+                      return <LoaderPinwheel className="h-3 w-3" />;
                   }
                 };
 
@@ -569,7 +583,7 @@ export default function App() {
                         </div>
                         {f.audio_duration && (
                           <div className="flex items-center space-x-1">
-                            <Clock className="h-3 w-3" />
+                            <LoaderPinwheel className="h-3 w-3" />
                             <span>{formatDuration(f.audio_duration)}</span>
                           </div>
                         )}
@@ -617,7 +631,7 @@ export default function App() {
                         {selected.transcription}
                       </p>
                     </div>
-                    <div className="flex items-center text-sm text-muted-foreground">
+                    <div className="flex items-center text-sm text-gray-500">
                       <span>Word count: {selected.word_count || 0} words</span>
                     </div>
                   </div>
@@ -698,7 +712,7 @@ export default function App() {
                           "transcribing",
                           "analyzing",
                         ].includes(selected.processing_stage) && (
-                          <Clock className="h-16 w-16 mx-auto text-muted-foreground animate-spin" />
+                          <LoaderPinwheel className="h-16 w-16 mx-auto text-muted-foreground animate-spin" />
                         )}
                       </div>
                       <h3 className="text-lg font-medium mb-2">
