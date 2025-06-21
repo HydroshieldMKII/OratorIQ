@@ -5,7 +5,7 @@ class AudioFileBase(BaseModel):
     filename: str
 
 class AudioFileCreate(AudioFileBase):
-    pass
+    selected_model: str | None = None
 
 class AudioFile(AudioFileBase):
     id: int
@@ -15,6 +15,11 @@ class AudioFile(AudioFileBase):
     summary: str | None = None
     questions: str | None = None
     word_count: int | None = None
+    processing_stage: str = "uploading"
+    progress_percentage: int = 0
+    file_size: int | None = None
+    audio_duration: float | None = None
+    selected_model: str | None = None
 
     class Config:
         from_attributes = True

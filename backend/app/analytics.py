@@ -40,19 +40,19 @@ def call_ollama(prompt: str, model: str = DEFAULT_MODEL) -> str:
         logger.error(f"Error calling Ollama: {e}")
         return ""
 
-def simple_summary(text: str, sentences: int = 2) -> str:
+def simple_summary(text: str, sentences: int = 2, model: str = DEFAULT_MODEL) -> str:
     """Generate a summary using self-hosted LLM with fallback"""
     if not text or text.startswith('['):
         return "No summary available"
     
     # Try LLM first
-    prompt = f"""Veuillez fournir un résumé concis du texte suivant en #{sentences} phrases. Ne incluez pas d'autres informations, juste le résumé.
+    prompt = f"""Veuillez fournir un résumé concis du texte suivant en #{sentences} phrases. Aucun autre texte n'est nécessaire, juste le résumé.
 
     Texte: {text[:1000]}
 
     Résumé:"""
     
-    llm_summary = call_ollama(prompt)
+    llm_summary = call_ollama(prompt, model)
     
     if llm_summary:
         return llm_summary
@@ -60,7 +60,7 @@ def simple_summary(text: str, sentences: int = 2) -> str:
     # Fallback
     return "No summary available"
 
-def generate_questions(text: str, num: int = 3) -> List[str]:
+def generate_questions(text: str, num: int = 3, model: str = DEFAULT_MODEL) -> List[str]:
     """Generate questions using self-hosted LLM with fallback"""
     if not text or text.startswith('['):
         return []
@@ -72,7 +72,7 @@ def generate_questions(text: str, num: int = 3) -> List[str]:
 
     Questions:"""
     
-    llm_response = call_ollama(prompt)
+    llm_response = call_ollama(prompt, model)
     
     if llm_response:
         # Parse questions from LLM response
