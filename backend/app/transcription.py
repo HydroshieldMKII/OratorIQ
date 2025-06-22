@@ -117,7 +117,12 @@ def process_audio(db: Session, audio_id: int, path: str, selected_model: str = N
         # Transcribe the audio
         text = transcribe_file(path, db, audio_id)
         logger.info(f"Transcription completed: {len(text)} characters")
-        
+
+        # If transcription failed, update error state and stop further processing
+        if text.strip().startswith("[Error:"):
+            crud.update_error_state(db, audio_id, text.strip())
+            return
+
         # Update progress - starting analysis
         crud.update_progress(db, audio_id, "analyzing", 80)
         
