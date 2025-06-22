@@ -25,10 +25,15 @@ OratorIQ est un outil de transcription de cours transformant un enregistrement a
 ## Démarrage rapide
 
 ```bash
+# Installation des fichiers nécessaires
 git clone https://github.com/HydroshieldMKII/OratorIQ
 cd OratorIQ
-chmod +x setupNvidiaContainerToolkit.sh  # configuration du GPU
+
+# configuration du GPU
+chmod +x setupNvidiaContainerToolkit.sh
 ./setupNvidiaContainerToolkit.sh
+
+# démarrage de l'application
 docker compose up --build
 ```
 
