@@ -668,7 +668,9 @@ export default function App() {
                   value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   className="w-40 ml-4"
-                  style={{ minWidth: 120 }}
+                  style={{
+                    minWidth: 120,
+                  }}
                 />
               </div>
 
@@ -690,6 +692,7 @@ export default function App() {
                   style={{
                     maxHeight: "600px",
                     overflowY: "auto",
+                    overflowX: "hidden",
                   }}
                 >
                   {filteredFiles.slice(0, 3).map((f) => {
@@ -748,8 +751,8 @@ export default function App() {
                         className={cn(
                           "cursor-pointer transition-all shadow-lg animate-slide-up border-2",
                           selected?.id === f.id
-                            ? "border-primary ring-2 ring-primary bg-gradient-to-br from-primary/10 via-background to-primary/5 dark:from-primary/20 dark:via-background dark:to-primary/10 shadow-xl scale-[1.025]"
-                            : "border-border hover:border-primary/60 hover:shadow-xl bg-background dark:bg-background"
+                            ? "border-4 border-primary ring-2 ring-primary bg-gradient-to-br from-primary/10 via-background to-primary/5 dark:from-primary/20 dark:via-background dark:to-primary/10 shadow-xl"
+                            : "border border-border hover:border-primary/60 hover:shadow-xl bg-background dark:bg-background"
                         )}
                         onClick={() => {
                           setSelected(selected?.id === f.id ? null : f);
