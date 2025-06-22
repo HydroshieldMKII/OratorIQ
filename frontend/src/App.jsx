@@ -209,12 +209,7 @@ export default function App() {
         setSelectedModel(data.models[0].name);
       }
     } catch (error) {
-      console.error("Error fetching models:", error);
-      // Set default models on error
-      setAvailableModels([
-        { name: "vatistasdim/boXai", display_name: "boXai (Default)" },
-      ]);
-      setSelectedModel("vatistasdim/boXai");
+      console.error("Error fetching models from backend:", error);
     }
   };
 
@@ -347,7 +342,7 @@ export default function App() {
       </header>
 
       <main className="container mx-auto px-6 py-8 space-y-8">
-        {/* Processing Status - Top Full Width */}
+        {/* Processing Status*/}
         {pollIntervalRef.current &&
           (() => {
             const processingFiles = files.filter(
@@ -435,7 +430,7 @@ export default function App() {
                     <div className="flex items-center justify-between text-xs text-blue-700 dark:text-blue-300">
                       <span>Overall Progress</span>
                       <span>
-                        {completedFiles}/{totalFiles} files completed
+                        {completedFiles}/{totalFiles} files completed {overallProgress}%
                       </span>
                     </div>
                     <Progress value={overallProgress} className="h-2" />
@@ -518,7 +513,7 @@ export default function App() {
                     >
                       <Info
                         className="h-4 w-4 text-muted-foreground cursor-pointer"
-                        aria-label="Help: Choose the AI model for generating the summary"
+                        aria-label="Help: The AI model that will be used for generating the summary"
                         role="img"
                         tabIndex={-1}
                         style={{ verticalAlign: "middle" }}
@@ -528,7 +523,7 @@ export default function App() {
                         style={{ display: "none", whiteSpace: "nowrap" }}
                         role="tooltip"
                       >
-                        Choose the AI model for generating the summary
+                        The AI model that will be used for generating the summary
                       </span>
                     </span>
                   </div>
