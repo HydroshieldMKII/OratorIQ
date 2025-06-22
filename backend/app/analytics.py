@@ -61,15 +61,22 @@ def simple_summary(text: str, sentences: int = 2, model: str = DEFAULT_MODEL) ->
     # Fallback
     return "No summary available"
 
-def generate_questions(text: str, num: int = 3, model: str = DEFAULT_MODEL) -> List[str]:
+def generate_questions(text: str, num: int = 3, model: str = DEFAULT_MODEL, existing_questions: List[str] = None) -> List[str]:
     """Generate questions using self-hosted LLM"""
     if not text or text.startswith('['):
         return []
-    
+    existing_questions = existing_questions or []
+    existing_block = ""
+    if existing_questions:
+        existing_block = (
+            "Voici des questions déjà générées, évitez de les répéter et proposez-en de nouvelles, différentes et couvrant d'autres aspects. Ne pas répéter les questions existantes.\n\n"
+            + "\n".join(existing_questions)
+            + "\n"
+        )
     # Try LLM first
-    prompt = f"""Basé sur le texte suivant, générez {num} questions réfléchies qui aideraient quelqu'un à comprendre les concepts clés et les idées discutées. Formatez chaque question sur une nouvelle ligne. Aucun autre texte n'est nécessaire, juste les questions. Les questions doivent être en français et pertinentes par rapport au contenu du texte. Ne pas inclure d'autres instructions ou commentaires.
+    prompt = f"""Basé sur le texte suivant, générez exactement {num} questions réfléchies, variées et diversifiées qui aideraient quelqu'un à comprendre les concepts clés et les idées discutées. Aucune de plus ou de moins ceci est extrêmenet important. Les questions doivent couvrir différents aspects du texte, ne pas se répéter, et être en français. Si des questions existent déjà, ne les répétez pas. Formatez chaque question sur une nouvelle ligne. Aucun autre texte n'est nécessaire, juste les questions.
 
-    Texte: {text[:1000]}
+    {existing_block}Texte: {text}
 
     Questions:"""
     

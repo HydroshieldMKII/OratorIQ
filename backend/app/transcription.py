@@ -83,10 +83,10 @@ def transcribe_file(path: str, db: Session, audio_id: int) -> str:
         print(f"FULL TRACEBACK: {traceback.format_exc()}")
         return f"[Error: Transcription failed - {str(e)}]"
 
-def process_audio(db: Session, audio_id: int, path: str, selected_model: str = None):
+def process_audio(db: Session, audio_id: int, path: str, selected_model: str = None, num_questions: int = 3, auto_generate_questions: bool = True):
     """Process audio file: transcribe and generate analytics with progress tracking"""
     try:
-        logger.info(f"Processing audio file {path} for audio_id {audio_id} with model {selected_model}")
+        logger.info(f"Processing audio file {path} for audio_id {audio_id} with model {selected_model}, num_questions {num_questions}, auto_generate_questions {auto_generate_questions}")
         
         # Extract audio duration
         duration = extract_audio_duration(path)
@@ -128,11 +128,12 @@ def process_audio(db: Session, audio_id: int, path: str, selected_model: str = N
         crud.update_progress(db, audio_id, "analyzing", 90)
         
         # Generate questions
-        questions_list = generate_questions(text, model=model_to_use)
-        logger.info(f"Generated questions: {questions_list}")
-
-        # Format questions
-        questions = '\n'.join([f"{i+1}. {q}" for i, q in enumerate(questions_list)]) if questions_list else "No questions generated"
+        if auto_generate_questions:
+            questions_list = generate_questions(text, num=num_questions, model=model_to_use)
+            logger.info(f"Generated questions: {questions_list}")
+            questions = '\n'.join([f"{i+1}. {q}" for i, q in enumerate(questions_list)]) if questions_list else "No questions generated"
+        else:
+            questions_list = []
         
         # Update database with final results
         result = crud.update_analysis(

@@ -41,6 +41,8 @@ def upload_audio(
     background_tasks: BackgroundTasks, 
     file: UploadFile = File(...), 
     selected_model: str = Form(None),
+    num_questions: int = Form(3),
+    auto_generate_questions: bool = Form(True),
     db: Session = Depends(get_db)
 ):
     # Create audio file record first to get unique filename
@@ -67,7 +69,7 @@ def upload_audio(
     db.refresh(audio)
     
     # Start background processing
-    background_tasks.add_task(process_audio, db, audio.id, filepath, selected_model)
+    background_tasks.add_task(process_audio, db, audio.id, filepath, selected_model, num_questions, auto_generate_questions)
     return audio
 
 @app.get("/files", response_model=list[schemas.AudioFile])
@@ -106,8 +108,8 @@ def get_available_models():
             
             # Always add these default models if not already present
             default_models = [
-                {'name': 'vatistasdim/boXai', 'display_name': 'boXai (Default)', 'size': 0},
                 {'name': 'llama3.2:1b', 'display_name': 'Llama 3.2', 'size': 0},
+                {'name': 'vatistasdim/boXai', 'display_name': 'boXai (Default)', 'size': 0},
                 {'name': 'smollm', 'display_name': 'SmolLM', 'size': 0}
             ]
 
@@ -171,6 +173,28 @@ def ask_question(audio_id: int, question: str = Form(...), db: Session = Depends
         raise HTTPException(status_code=404, detail="Transcription not found")
     answer = answer_question(audio.transcription, question)
     return {"answer": answer}
+
+@app.post("/files/{audio_id}/generate_questions")
+def generate_more_questions(audio_id: int, num_questions: int = 3, db: Session = Depends(get_db)):
+    """
+    Generate more questions for an existing audio file and append them to the database.
+    """
+    audio = crud.get_audio_file(db, audio_id)
+    if not audio or not audio.transcription:
+        raise HTTPException(status_code=404, detail="Transcription not found")
+    # Parse existing questions
+    existing = []
+    if audio.questions:
+        existing = [q.strip() for q in audio.questions.split("\n") if q.strip()]
+    from .analytics import generate_questions
+    new_questions = generate_questions(audio.transcription, num=num_questions, existing_questions=existing)
+    # Append only unique questions
+    unique_new = [q for q in new_questions if q not in existing]
+    all_questions = existing + unique_new
+    audio.questions = "\n".join([f"{i+1}. {q}" for i, q in enumerate(all_questions)])
+    db.commit()
+    db.refresh(audio)
+    return {"questions": unique_new}
 
 @app.delete("/files/{audio_id}")
 def delete_file(audio_id: int, db: Session = Depends(get_db)):

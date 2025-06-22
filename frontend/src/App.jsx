@@ -89,6 +89,31 @@ function AskQuestionSection({ audioId }) {
 }
 
 export default function App() {
+  // State for "Generate More Questions" panel
+  const [moreCount, setMoreCount] = useState(3);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [errorMore, setErrorMore] = useState("");
+  const [successMore, setSuccessMore] = useState("");
+
+  const handleGenerateMore = async (audioId) => {
+    setLoadingMore(true);
+    setErrorMore("");
+    setSuccessMore("");
+    try {
+      const res = await fetch(`http://localhost:8000/files/${audioId}/generate_questions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ num_questions: moreCount }),
+      });
+      if (!res.ok) throw new Error("Failed to generate more questions");
+      setSuccessMore("Questions generated.");
+      await fetchFiles();
+    } catch (e) {
+      setErrorMore("Could not generate more questions.");
+    } finally {
+      setLoadingMore(false);
+    }
+  };
   const [file, setFile] = useState(null);
   const [files, setFiles] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -96,6 +121,11 @@ export default function App() {
   const [dragActive, setDragActive] = useState(false);
   const [availableModels, setAvailableModels] = useState([]);
   const [selectedModel, setSelectedModel] = useState("");
+  const [numQuestions, setNumQuestions] = useState(() => {
+    const saved = localStorage.getItem("numQuestions");
+    return saved ? Number(saved) : 3;
+  });
+  const [autoGenerateQuestions, setAutoGenerateQuestions] = useState(true);
   const pollIntervalRef = useRef(null);
   const fileInputRef = useRef(null);
   const selectedRef = useRef(null);
@@ -200,6 +230,11 @@ export default function App() {
       if (selectedModel) {
         form.append("selected_model", selectedModel);
       }
+      if (autoGenerateQuestions) {
+        form.append("num_questions", numQuestions);
+        localStorage.setItem("numQuestions", numQuestions);
+      }
+      form.append("auto_generate_questions", autoGenerateQuestions ? "true" : "false");
       await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: form,
@@ -283,7 +318,23 @@ export default function App() {
               </p>
             </div>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center space-x-4">
+            {/* Auto-generate questions preference */}
+            <div className="flex items-center space-x-2">
+              <label htmlFor="auto-generate-toggle" className="text-sm font-medium">
+                Auto-generate Questions
+              </label>
+              <input
+                id="auto-generate-toggle"
+                type="checkbox"
+                checked={autoGenerateQuestions}
+                onChange={() => setAutoGenerateQuestions((v) => !v)}
+                className="accent-primary h-4 w-4"
+                style={{ accentColor: "var(--primary)" }}
+              />
+            </div>
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
@@ -351,6 +402,7 @@ export default function App() {
               onDragOver={handleDrag}
               onDrop={handleDrop}
               onClick={() => !file && fileInputRef.current?.click()}
+              style={{ cursor: file ? "default" : "pointer" }}
             >
               <input
                 ref={fileInputRef}
@@ -372,6 +424,7 @@ export default function App() {
                       }}
                       className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center transition-colors shadow-md hover:shadow-lg cursor-pointer"
                       title="Remove file"
+                      style={{ cursor: "pointer" }}
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -382,6 +435,39 @@ export default function App() {
                       {(file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
                   </div>
+                  {/* Number of Questions Selector */}
+                  {autoGenerateQuestions && (
+                    <div className="space-y-1">
+                      <label className="text-sm font-medium flex items-center space-x-2">
+                        <MessageSquare className="h-4 w-4" />
+                        <span>Number of Questions</span>
+                      </label>
+                      <select
+                        value={numQuestions}
+                        onChange={e => setNumQuestions(Number(e.target.value))}
+                        className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        disabled={isProcessing}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {[...Array(10)].map((_, i) => (
+                          <option
+                            key={i + 1}
+                            value={i + 1}
+                            className="bg-background text-foreground p-2"
+                            style={{
+                              backgroundColor: "hsl(var(--background))",
+                              color: "hsl(var(--foreground))",
+                            }}
+                          >
+                            {i + 1}
+                          </option>
+                        ))}
+                      </select>
+                      <p className="text-xs text-muted-foreground">
+                        Choose how many questions to generate (1–10)
+                      </p>
+                    </div>
+                  )}
                   <Button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -392,6 +478,7 @@ export default function App() {
                     onMouseLeave={(e) => e.stopPropagation()}
                     disabled={isProcessing}
                     className="min-w-32 cursor-pointer hover:cursor-pointer border-2 border-primary bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors shadow-md hover:shadow-lg relative z-10"
+                    style={{ cursor: "pointer" }}
                   >
                     {isProcessing ? (
                       <>
@@ -605,16 +692,17 @@ export default function App() {
                     className={cn(
                       "cursor-pointer transition-all duration-300 hover:scale-[1.02] shadow-lg animate-slide-up",
                       selected?.id === f.id
-                        ? "bg-gray-50 dark:bg-gray-800 ring-2 ring-primary shadow-lg"
+                        ? "bg-gray-50 dark:bg-gray-400 ring-2 ring-primary shadow-lg"
                         : ""
                     )}
                     onClick={() => {
                       setSelected(selected?.id === f.id ? null : f);
                     }}
+                    style={{ cursor: "pointer" }}
                   >
                     <CardHeader className="pb-3">
                       <div className="flex items-start justify-between">
-                        <CardTitle className="text-lg truncate pr-2 text-black dark:text-white">
+                        <CardTitle className="text-lg truncate pr-2 text-foreground">
                           {f.filename}
                         </CardTitle>
                         <Badge
@@ -638,7 +726,7 @@ export default function App() {
                       {/* Progress Bar */}
                       {f.processing_stage !== "complete" &&
                         f.processing_stage !== "error" && (
-                          <div className="flex items-center space-x-2 text-xs text-black dark:text-white">
+                          <div className="flex items-center space-x-2 text-xs text-foreground">
                             <span>{getStageText(f.processing_stage)}</span>
                             <Progress
                               value={f.progress_percentage || 0}
@@ -653,14 +741,14 @@ export default function App() {
                       {/* Model Info for Complete Files */}
                       {f.processing_stage === "complete" &&
                         f.selected_model && (
-                          <div className="flex items-center space-x-1 text-xs text-black dark:text-white">
+                          <div className="flex items-center space-x-1 text-xs text-foreground">
                             <Cpu className="h-3 w-3" />
                             <span>{f.selected_model.split("/").pop()}</span>
                           </div>
                         )}
 
                       {/* File Metadata */}
-                      <div className="flex items-center justify-between text-xs text-black dark:text-white">
+                      <div className="flex items-center justify-between text-xs text-foreground">
                         <div className="flex items-center space-x-4">
                           <div className="flex items-center space-x-1">
                             <HardDrive className="h-3 w-3" />
@@ -686,6 +774,7 @@ export default function App() {
                           }}
                           className="text-red-500 hover:text-red-600 transition-colors ml-2"
                           title="Delete file"
+                          style={{ cursor: "pointer" }}
                           onMouseOver={(e) => {
                             e.target.style.cursor = "pointer";
                           }}
@@ -750,7 +839,7 @@ export default function App() {
 
                   {/* Questions */}
                   <div className="space-y-3">
-                    <h3 className="text-lg font-semibold flex items-center space-x-2">
+                    <h3 className="text-lg font-semibold flex items-center space-x-2 ">
                       <MessageSquare className="h-4 w-4" />
                       <span>Generated Questions</span>
                     </h3>
@@ -779,6 +868,48 @@ export default function App() {
                           No questions generated
                         </p>
                       )}
+                      {/* Generate more questions if auto-generate is off */}
+                      <div className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mt-4 flex flex-col md:flex-row md:items-end gap-2">
+                        <div className="flex-1 flex flex-col">
+                          <label className="text-sm font-medium flex items-center space-x-2 mb-1">
+                            <MessageSquare className="h-4 w-4" />
+                            <span>Add more questions about this audio</span>
+                          </label>
+                          <select
+                            value={moreCount}
+                            onChange={e => setMoreCount(Number(e.target.value))}
+                            disabled={loadingMore}
+                            className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            style={{ cursor: "pointer" }}
+                          >
+                            {[...Array(10)].map((_, i) => (
+                              <option
+                                key={i + 1}
+                                value={i + 1}
+                                className="bg-background text-foreground p-2"
+                                style={{
+                                  backgroundColor: "hsl(var(--background))",
+                                  color: "hsl(var(--foreground))",
+                                }}
+                              >
+                                {i + 1}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                        <Button
+                          onClick={() => handleGenerateMore(selected.id)}
+                          disabled={loadingMore}
+                          style={{ cursor: "pointer" }}
+                          className="min-w-32 cursor-pointer hover:cursor-pointer border-2 border-primary bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors shadow-md hover:shadow-lg relative z-10 md:ml-2"
+                        >
+                          {loadingMore ? "Generating..." : "Generate More Questions"}
+                        </Button>
+                        <div className="flex flex-col justify-end min-h-[1.5rem]">
+                          {errorMore && <span className="text-red-500 text-xs">{errorMore}</span>}
+                          {successMore && <span className="text-green-600 text-xs">{successMore}</span>}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
