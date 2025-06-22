@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script sets up the NVIDIA Container Toolkit on a Ubuntu/Debian system. This script should work for any Debian-derived distribution.
-# More info: https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation
+# Based on https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#installation
 
 set -e
 

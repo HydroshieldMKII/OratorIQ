@@ -6,7 +6,7 @@ OratorIQ est un outil de transcription de cours transformant un enregistrement a
 
 ## Fonctionnalités clés
 
-- **Téléversement simple** : glisser-déposer d'un ou plusieurs fichiers audio.
+- **Téléversement simple** : glisser-déposer de fichiers audio.
 - **Transcription et résumé** : extraction automatisée des points essentiels via l'IA.
 - **Génération de Q&R** : création de questions à partir du contenu analysé.
 - **Interface moderne** : application responsive avec mode sombre ou clair.
@@ -14,7 +14,6 @@ OratorIQ est un outil de transcription de cours transformant un enregistrement a
 ## Avantages
 
 - **Gain de temps** : environ 3 minutes pour transcrire 1h10 d'audio avec un GPU Nvidia RTX 4060 mobile.
-- **Application légère** : adaptée aux fichiers volumineux.
 - **Déploiement Docker** : mise en service en quelques commandes tout en gardant vos données localement.
 
 ## Prérequis
