@@ -13,8 +13,6 @@ class AudioFile(Base):
     summary = Column(String, nullable=True)
     questions = Column(String, nullable=True)
     word_count = Column(Integer, default=0)
-    
-    # New fields for enhanced functionality
     processing_stage = Column(String, default="uploading")  # uploading, downloading_model, transcribing, analyzing, complete, error
     progress_percentage = Column(Integer, default=0)
     file_size = Column(BigInteger, nullable=True)  # File size in bytes
