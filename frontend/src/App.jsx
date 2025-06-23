@@ -830,7 +830,7 @@ export default function App() {
                                   style={{ cursor: "pointer" }}
                                 >
                                   <X className="h-4 w-4" />
-                                  <span className="ml-1 text-xs font-medium hidden sm:inline">Cancel</span>
+                                  <span className="ml-1 mr-1 text-xs font-medium hidden sm:inline">Cancel</span>
                                 </button>
                               </div>
                             )}
