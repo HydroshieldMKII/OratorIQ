@@ -106,7 +106,7 @@ export default function App() {
     const saved = localStorage.getItem("numQuestions");
     return saved ? Number(saved) : 3;
   });
-  const [autoGenerateQuestions, setAutoGenerateQuestions] = useState(true);
+  const [autoGenerateQuestions, setAutoGenerateQuestions] = useState(localStorage.getItem("autoGenerateQuestions") === "true");
   const pollIntervalRef = useRef(null);
   const fileInputRef = useRef(null);
   const selectedRef = useRef(null);
@@ -331,7 +331,12 @@ export default function App() {
                 id="auto-generate-toggle"
                 type="checkbox"
                 checked={autoGenerateQuestions}
-                onChange={() => setAutoGenerateQuestions((v) => !v)}
+                onChange={() => {
+                  setAutoGenerateQuestions((v) => {
+                    localStorage.setItem("autoGenerateQuestions", (!v).toString());
+                    return !v;
+                  });
+                }}
                 className="accent-primary h-4 w-4"
                 style={{ accentColor: "var(--primary)", cursor: "pointer" }}
               />
@@ -932,7 +937,7 @@ export default function App() {
                           <BarChart3 className="h-4 w-4" />
                           <span>Summary</span>
                         </h3>
-                        <div className="bg-muted/50 rounded-lg p-4">
+                        <div className="bg-muted/50 rounded-lg p-4 max-h-48 overflow-y-auto">
                           <p className="text-sm leading-relaxed">
                             {selected.summary || "No summary available"}
                           </p>
@@ -945,7 +950,7 @@ export default function App() {
                           <MessageSquare className="h-4 w-4" />
                           <span>Generated Questions</span>
                         </h3>
-                        <div className="bg-muted/50 rounded-lg p-4">
+                        <div className="bg-muted/50 rounded-lg p-4 max-h-64 overflow-y-auto">
                           {selected.questions ? (
                             <div className="space-y-3">
                               {selected.questions
@@ -974,48 +979,48 @@ export default function App() {
                               No questions generated
                             </p>
                           )}
-                          {/* Generate more questions if auto-generate is off */}
-                          <div className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mt-4 flex flex-col md:flex-row md:items-end gap-2">
-                            <div className="flex-1 flex flex-col">
-                              <label className="text-sm font-medium flex items-center space-x-2 mb-1">
-                                <MessageSquare className="h-4 w-4" />
-                                <span>Add more questions about this audio</span>
-                                <div className="flex flex-col justify-end min-h-[1.5rem]">
-                                  {errorMore && <span className="text-red-500 text-xs">{errorMore}</span>}
-                                  {successMore && <span className="text-green-600 text-xs">{successMore}</span>}
-                                </div>
-                              </label>
-                              <select
-                                value={moreCount}
-                                onChange={e => setMoreCount(Number(e.target.value))}
-                                disabled={loadingMore}
-                                className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                                style={{ cursor: "pointer" }}
-                              >
-                                {[...Array(10)].map((_, i) => (
-                                  <option
-                                    key={i + 1}
-                                    value={i + 1}
-                                    className="bg-background text-foreground p-2"
-                                    style={{
-                                      backgroundColor: "hsl(var(--background))",
-                                      color: "hsl(var(--foreground))",
-                                    }}
-                                  >
-                                    {i + 1}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-                            <Button
-                              onClick={() => handleGenerateMore(selected.id)}
+                        </div>
+                        {/* Generate more questions if auto-generate is off */}
+                        <div className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent mt-4 flex flex-col md:flex-row md:items-end gap-2">
+                          <div className="flex-1 flex flex-col">
+                            <label className="text-sm font-medium flex items-center space-x-2 mb-1">
+                              <MessageSquare className="h-4 w-4" />
+                              <span>Add more questions about this audio</span>
+                              <div className="flex flex-col justify-end min-h-[1.5rem]">
+                                {errorMore && <span className="text-red-500 text-xs">{errorMore}</span>}
+                                {successMore && <span className="text-green-600 text-xs">{successMore}</span>}
+                              </div>
+                            </label>
+                            <select
+                              value={moreCount}
+                              onChange={e => setMoreCount(Number(e.target.value))}
                               disabled={loadingMore}
+                              className="w-full p-2 border border-border rounded-lg bg-background text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                               style={{ cursor: "pointer" }}
-                              className="min-w-32 cursor-pointer hover:cursor-pointer border-2 border-primary bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors shadow-md hover:shadow-lg relative z-10 md:ml-2"
                             >
-                              {loadingMore ? "Generating..." : "Generate More Questions"}
-                            </Button>
+                              {[...Array(10)].map((_, i) => (
+                                <option
+                                  key={i + 1}
+                                  value={i + 1}
+                                  className="bg-background text-foreground p-2"
+                                  style={{
+                                    backgroundColor: "hsl(var(--background))",
+                                    color: "hsl(var(--foreground))",
+                                  }}
+                                >
+                                  {i + 1}
+                                </option>
+                              ))}
+                            </select>
                           </div>
+                          <Button
+                            onClick={() => handleGenerateMore(selected.id)}
+                            disabled={loadingMore}
+                            style={{ cursor: "pointer" }}
+                            className="min-w-32 cursor-pointer hover:cursor-pointer border-2 border-primary bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground transition-colors shadow-md hover:shadow-lg relative z-10 md:ml-2"
+                          >
+                            {loadingMore ? "Generating..." : "Generate More Questions"}
+                          </Button>
                         </div>
                       </div>
                     </div>
