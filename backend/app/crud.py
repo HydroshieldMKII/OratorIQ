@@ -14,7 +14,6 @@ def generate_unique_filename(db: Session, filename: str) -> str:
     return filename
 
 def create_audio_file(db: Session, filename: str, file_size: int = None, selected_model: str = None) -> models.AudioFile:
-    # Generate unique filename to avoid duplicates
     unique_filename = generate_unique_filename(db, filename)
     
     db_obj = models.AudioFile(
@@ -81,12 +80,12 @@ def update_error_state(db: Session, audio_id: int, error_message: str):
 
 def stop_ollama_process(audio_id: int):
     """Placeholder function to stop Ollama process for a specific file"""
-    # Logic to stop Ollama process
+    # TODO: Logic to stop Ollama process
     pass
 
 def stop_whisper_process(audio_id: int):
     """Placeholder function to stop Whisper process for a specific file"""
-    # Logic to stop Whisper process
+    # TODO: Logic to stop Whisper process
     pass
 
 def delete_audio_file(db: Session, audio_id: int):

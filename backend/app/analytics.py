@@ -76,7 +76,10 @@ def generate_questions(text: str, num: int = 3, model: str = DEFAULT_MODEL, exis
     # Try LLM first
     prompt = f"""Basé sur le texte suivant, générez exactement {num} questions réfléchies, variées et diversifiées qui aideraient quelqu'un à comprendre les concepts clés et les idées discutées. Aucune de plus ou de moins ceci est extrêmenet important. Les questions doivent couvrir différents aspects du texte, ne pas se répéter, et être en français. Si des questions existent déjà, ne les répétez pas. Formatez chaque question sur une nouvelle ligne. Aucun autre texte n'est nécessaire, juste les questions.
 
-    {existing_block}Texte: {text}
+    Questions existantes (si disponibles) :
+    {existing_block}
+
+    Texte à analyser pour générer les questions: {text}
 
     Questions:"""
     

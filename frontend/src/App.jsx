@@ -813,6 +813,25 @@ export default function App() {
                                 <span className="font-medium">
                                   {f.progress_percentage || 0}%
                                 </span>
+                                {/* Cancel Icon and Message */}
+                                <button
+                                  onClick={e => {
+                                    e.stopPropagation();
+                                    if (
+                                      window.confirm(
+                                        `Are you sure you want to cancel and delete '${f.filename}'?`
+                                      )
+                                    ) {
+                                      deleteFile(f.id);
+                                    }
+                                  }}
+                                  className="ml-2 flex items-center text-red-500 hover:text-red-600 transition-colors rounded-full p-1 bg-red-50 dark:bg-red-900/40 hover:bg-red-100 dark:hover:bg-red-800"
+                                  title="Cancel processing and delete file"
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  <X className="h-4 w-4" />
+                                  <span className="ml-1 text-xs font-medium hidden sm:inline">Cancel</span>
+                                </button>
                               </div>
                             )}
 
@@ -841,23 +860,27 @@ export default function App() {
                                 </div>
                               )}
                             </div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (
-                                  window.confirm(
-                                    `Are you sure you want to delete and stop processing '${f.filename}'?`
-                                  )
-                                ) {
-                                  deleteFile(f.id);
-                                }
-                              }}
-                              className="text-red-500 hover:text-red-600 transition-colors ml-2 rounded-full p-1 bg-red-50 dark:bg-red-900/40 hover:bg-red-100 dark:hover:bg-red-800"
-                              title="Delete file"
-                              style={{ cursor: "pointer" }}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
+                            {/* Show Trash2 only if not processing */}
+                            {(f.processing_stage === "complete" ||
+                              f.processing_stage === "error") && (
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (
+                                      window.confirm(
+                                        `Are you sure you want to delete and stop processing '${f.filename}'?`
+                                      )
+                                    ) {
+                                      deleteFile(f.id);
+                                    }
+                                  }}
+                                  className="text-red-500 hover:text-red-600 transition-colors ml-2 rounded-full p-1 bg-red-50 dark:bg-red-900/40 hover:bg-red-100 dark:hover:bg-red-800"
+                                  title="Delete file"
+                                  style={{ cursor: "pointer" }}
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </button>
+                              )}
                           </div>
                         </CardContent>
                       </Card>
